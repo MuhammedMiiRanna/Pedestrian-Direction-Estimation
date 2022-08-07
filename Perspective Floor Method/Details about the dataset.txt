@@ -1,0 +1,48 @@
+
+## Details About the Dataset:
+# dataset link: http://www.cbsr.ia.ac.cn/users/szheng/?page_id=71
+
+
+** Dataset A: 
+(former NLPR Gait Database) was created on Dec. 10, 2001, including 20 persons. 
+Each person has 12 image sequences, 4 sequences for each of the three directions, i.e. 
+parallel, 45 degrees and 90 degrees to the image plane. 
+The length of each sequence is not identical for the variation of the walker’s speed, but it must ranges from 37 to 127. 
+The size of Dataset A is about 2.2GB and the database includes 19139 images.
+
+- The format of the image filename in Dataset A is ‘xxx-mm_n-ttt.png’, where:
+    xxx: subject id,
+    mm: direction,
+    n: sequence number,
+    ttt: frame number in a sequence
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+** Dataset B: 
+Dataset B is a large multiview gait database, which is created in January 2005. There are 124 subjects, and the gait data was captured from 11 views. 
+Three variations, namely view angle, clothing and carrying condition changes, are separately considered. 
+Besides the video files, we still provide human silhouettes extracted from video files. 
+The detailed information about Dataset B and an evaluation framework can be found in this paper .
+
+- The format of the video filename in Dataset B is ‘xxx-mm-nn-ttt.avi’, where
+    xxx: subject id, from 001 to 124.
+    mm: walking status, can be ‘nm’ (normal), ‘cl’ (in a coat) or ‘bg’ (with a bag).
+    nn: sequence number.
+    ttt: view angle, can be ’000′, ’018′, …, ’180′.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+** Dataset C: 
+was collected by an infrared (thermal) camera in Jul.-Aug. 2005. It contains 153 subjects and takes into account four walking conditions: 
+    normal walking, 
+    slow walking, 
+    fast walking, 
+    and normal walking with a bag. 
+The videos were all captured at night.
+
+- The format of the video filename in Dataset C is ’01xxxmmnn.avi’, where
+    xxx: subject id, from 001 to 153.
+    mm: walking status, can be ‘fn’ (normal), ‘fq’ (fast walk), ‘fs’ (slow walk) or ‘fb’ (with a bag).
+    nn: sequence number.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
