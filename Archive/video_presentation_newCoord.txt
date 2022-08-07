@@ -1,0 +1,41 @@
+VID_01
+bonjours , 
+permettez-nous de nous présenter pour vous, moh & billel
+nous voulons prendre un moment pour vous remercier tous pour votre temps et votre attention
+
+
+VID_1.2
+dans ce memoire nous allons présenter une approche d'estimation de la direction du mouvement des personnes,
+tout d'abord nous allons parler bréevement sur l'estimation de la direction ansi que son importance. ensuite nous allons présenté notre méthode illustrés par des esseai.
+
+
+VID_02:
+Beaucoup de chercheurs se sont intéreser au domaine de l'estimation de la direction du mouvement vu les avnetages qu’elle fournit dans des multiples applications, telle que l'analyse du mouvement, les systèmes de contrôle de la circulation, les voitures intelligentes, l'identification des piétons basée sur la marche et la vidéo-surveillance.
+
+
+VID_03:
+maintenamnt nous allons vous présenter notre méthode
+afin d'estimer la direction du mouvement , on a projeter une sol de 3D sur une scène de 2D pour extrait l'emplacement virtuelle des deux déferente silhouette des piétons afin de les comparer pour calculer l'angle de la direction du mouvement . 
+la scène est une projection d'un sol 3D sur des images 2D, largement utilisées dans les applications graphiques ete geometrique général, on a pris une photo en noir, on a tracé 2 lignes principales au milieu de la scène dans un premier temps, après cela, on dessine des lignes horizontales avec une distance augmente progressivement entre eux. puis des lignes verticales inclinées pour façonner les colonnes. ces lignes horizontales et verticales simulent un sol fait de carlage qui nous aide comme une unité de mesure.
+
+et afin de savoir où il a commencé le mouvment et où il est allé, nous avons divisé la scène en quatre zones principales, "Nord", "Sud", "Est", "Ouest".
+
+
+VID_04:
+maintenant la scène est prête.
+la prochaine étape consiste à poser les silhouettes humaines sur le sol perspective , puis on a besoin de connaitre l'emplacement de chaque silhouette, pour cela on a utilisé la'algorithme de Zhang-suen. c'est un algorithme utilisé pour fluidifier une image en noir et blanc, c'est-à-dire un bit par pixel pour extrait les cordonées de bits qui nous intéresse .
+l'algorithme de Zhang suen fonctionne comme suit :
+supposant que chaque pixel a 8 voisins , l'algorithme opère sur tout les pixels noir pouvant avoir 8 voisins et les fluidifier en 1 seul pixel. aprées on parcour sur le rsultat ebtenues en souvgardant les coordondonées des pixel noir dans une list qui nous parmet d'avoir les coordonées de tout les pixels de la squellete , de cela on extrait un point de chaque pied qui nous permet d'avoir les coordonées de l'emlacement de la silhouette.
+
+
+VID_05:
+Une fois que nous avons la scène, les coordonnées et ses zones, il est maintenant temps d'estimer la direction du mouvement.
+
+Si le piéton allait dans l'une des quatre principales directions, il restera dans le même horizon / colonne, comme on peut le voir dans cet exemple.
+-à nous avons deux silhouettes avec un ange de '000 ° et "180 °" et comme vous pouvez le constater que le piéton a séjourné dans la même colonne.
+-et ici, nous avons deux silhouettes avec un ange de '90 ° et '270 °', il est resté aux mêmes horizons ou deux horizons adjacents.
+
+Si le piéton allait dans une autre direction, nous travaillons avec les coordonnées de deux points choisis parmi les deux silhouettes, nous choisissons un point situé entre les deux points extraits.
+Comme vous pouvez le constater dans l'exemple, le piéton croisé '' Horizons and '' colonne, donc l'ange est ''°, et après le réglage, nous avons une plage estimée de 20 ° qui vous donne la direction de piétonne.
+
+ 

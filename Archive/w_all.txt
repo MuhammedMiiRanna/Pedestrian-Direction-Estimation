@@ -1,0 +1,1589 @@
+import cv2 as cv
+import winsound
+import numpy as np
+from random import random, randint
+from os.path import abspath, isfile
+from math import sqrt, cos, acos, degrees
+from os import listdir, mkdir, getcwd, chdir, name, system
+from lib import clear, calculateAngle, angIndx
+from time import time, sleep
+
+
+def inside(r, q):
+    rx, ry, rw, rh = r
+    qx, qy, qw, qh = q
+    return rx > qx and ry > qy and rx + rw < qx + qw and ry + rh < qy + qh
+def draw_detections(img, rects, thickness=1):
+    for x, y, w, h in rects:
+        # the HOG detector returns slightly larger rectangles than the real objects.
+        # so we slightly shrink the rectangles to get a nicer output.
+        # pad_w, pad_h = int(0.15 * w), int(0.05 * h)
+        pad_w, pad_h = 0, 0
+        cv2.rectangle(img, (x + pad_w, y + pad_h),
+                      (x + w - pad_w, y + h - pad_h), (0, 255, 0), thickness)
+# Read image and convert it to grayscale.
+img = cv2.imread('images/walk5.jpg')
+# img = cv2.imread('walke.jfif')
+# img = cv2.imread('walk3.jpg')
+# img = cv2.imread('feuille.jpg')
+# img = cv2.imread('walk2.jpg')
+white = cv2.imread('white.jfif')
+hog = cv2.HOGDescriptor()
+hog.setSVMDetector(cv2.HOGDescriptor_getDefaultPeopleDetector())
+found, w = hog.detectMultiScale(img, winStride=(8, 8), scale=1.05)
+found_filtered = []
+for ri, r in enumerate(found):
+    for qi, q in enumerate(found):
+        if ri != qi and inside(r, q):
+            break
+        else:
+            gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+            blur = cv2.GaussianBlur(gray, (5, 5), 0)
+            # cv2.imshow('blur',blur)
+            # Search for edges in the image with cv2.Canny().
+            edges = cv2.Canny(blur, 150, 200)
+            edges = cv2.resize(edges, (300, 200))
+            cv2.imshow('canny image', edges)
+            # Search for contours in the edged image with cv2.findContour().
+            contours = cv2.findContours(
+                edges, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+            contours = contours[0] if len(contours) == 2 else contours[1]
+            # Filter out contours that are not in your interest by applying size criterion.
+            for cnt in contours:
+                size = cv2.contourArea(cnt)
+                if size > 50:
+                    cv2.drawContours(white, [cnt], -1, (0, 0, 0), 3)
+            found_filtered.append(r)
+            draw_detections(img, found)
+            draw_detections(img, found_filtered, 3)
+cv2.imshow('img', resImg(img, dim=600))
+cv2.imshow('white', resImg(white, dim=600))
+print(">> Progrm started!!")
+starting_time = time()
+angle_result_files = []
+abnormal_pictures = []
+angles = ["00", "45", "90"]
+# angle_normal_range
+rng = [(-1, 6.9), (7, 45), (45.1, 120)]
+main_direc = "M:/Documents/Projects/End Of Study/End of Study Project/scripts/script/GaitDatasetA-silh"
+folders = listdir(main_direc)
+# folders = folders[0:5]
+len_folder = len(folders)
+saved_pictures = []
+current_direc = "M:/Documents/Projects/End Of Study/End of Study Project/scripts/script/one point method tester"
+for angle in angles:
+    # mkdir(angle)
+    angle_result_files.append(open(angle+".txt", "w"))
+for index, folder in enumerate(folders):
+    clear()
+    print(">> Progrm started!!")
+    print("==> {:05.2f}%".format((index*100)/len_folder))
+    # print(">> Folder:", folder)
+    degree_folders = listdir(main_direc+"/"+folder)
+    for degree in degree_folders:
+        angle = degree[:2]
+        path = main_direc+"/"+folder+"/"+degree
+        pictures = listdir(path)
+        # print(main_direc+"/"+folder+"/"+degree+"/"+pictures[0])
+        # print(main_direc+"/"+folder+"/"+degree+"/"+pictures[-1])
+        used_pictures = [path+"/"+pictures[0],
+                         path+"/"+pictures[len(pictures)-1]]
+        first_pic = cv.imread(used_pictures[0])
+        last_pic = cv.imread(used_pictures[1])
+        angle_estimation, image_result = calculateAngle(first_pic, last_pic)
+        saved_pictures.append([pictures[0][:-8], image_result])
+
+        if rng[angIndx(angle)][1] < angle_estimation < rng[angIndx(angle)][0]:
+            abnormal_pictures.append(path+"/"+pictures[1])
+        angle_result_files[angIndx(angle)].write(
+            "{:.2f}\n".format(angle_estimation))
+# quit = False
+# for saving in saved_pictures:
+#     # direc = name[-4:-2]
+#     # chdir(old_path+"/"+direc)
+#     # saving_result = cv.imwrite(name, saved_pictures)
+#     while True:
+#         cv.imshow(saving[0], saving[1])
+#         print("hh")
+#         print("hhh")
+#         if cv.waitKey(25) & 0xFF == 110:
+#             break
+#         # elif cv.waitKey(25) & 0xFF == 113:
+#         #     quit = True
+#         #     break
+#     cv.destroyAllWindows()
+#     # if quit:
+#     #     break
+# old_path = getcwd()
+# for saving in saved_pictures:
+#     direc = name[-4:-2]
+#     chdir(old_path+"/"+direc)
+#     # saving_result = cv.imwrite(name, saved_pictures)
+#     saving_result = cv.imwrite(saving[0], saving[1])
+#     print("Saved!!") if saving_result else print("failed")
+#     chdir(old_path)
+for index in range(0, len(angle_result_files)):
+    angle_result_files[index].close()
+with open("abnormal.txt", "w") as abnormal:
+    for picture in set(abnormal_pictures):
+        print(picture)
+        abnormal.write(picture+"\n")
+print(">> Progrm started!!")
+print(">> Progrm has Finished!!")
+print("==> {100.00}%")
+for index, angle_file in enumerate(angles):
+    average = []
+    file = open(angle_file+".txt", "r")
+    angle = file.readline()[:-1]
+    min_ang = max_ang = float(angle)
+    while angle:
+        angle = float(angle)
+        average.append(angle)
+        min_ang = min(angle, min_ang)
+        max_ang = max(angle, max_ang)
+        angle = file.readline()
+    print(f">>>>>>>>>>>>>>> {angle_file} <<<<<<<<<<<<<<<")
+    print(f"Min Angle ==>{min_ang} Deg")
+    print(f"Max Angle ==>{max_ang} Deg")
+    print(f"Average is ==>{sum(average)/len(average)}")
+    print(f"average Angle ==> \n{average}")
+    print("*"*45)
+    file.close()
+# it gives an alert when the program is done !
+winsound.Beep(500, 1000)
+print("\a\a\a>> Time: {} Minute!! {:.3f} Second!!".format(
+    int((time()-starting_time)/60), (time()-starting_time) % 60))
+def resImg(image, scale=0.3, dim=0):
+    h, w = image.shape[:2]
+    if dim and w > dim:
+        dim = dim, int(dim*(h/w))
+    elif not h < 600 and not w < 800:
+        dim = int(w*scale), int(h*scale)
+    else:
+        dim = w, h
+    return cv.resize(image, dim, interpolation=cv.INTER_LINEAR)
+def path(*paths):
+    return "/".join(paths)
+def anglesAverage(coordinations):
+    return sum(coordinations)/len(coordinations)
+def angIndx(angle):
+    angles = ["00", "45", "90"]
+    return angles.index(str(angle))
+def nearestAngle(angle):
+    angles = [0, 45, 90]
+    difference = []
+    difference.append(abs(angle-0))
+    difference.append(abs(angle-45))
+    difference.append(abs(angle-90))
+    return angles[difference.index(min(difference))]
+def calculateAngles(coordinations):
+    angles = []
+    for index in range(0, len(coordinations)-1):
+        A = coordinations[index]
+        B = coordinations[index+1]
+        angles.append(directionEstimation((0, A), (0, B)))
+    return angles
+def deepestPoint(img):
+    # img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+    last_pixel = 0, 0
+    height, width = img.shape[:2]
+    for y in range(height):
+        for x in range(width):
+            if img[y][x][0] == img[y][x][1] == img[y][x][2] == 255:
+                # if img[y][x] == 255:
+                last_pixel = (x, y)
+    return last_pixel
+def noiseRemover(img, val=500, color=(255, 255, 255)):
+    # finding Countours or Noise Remove:
+    blank = np.zeros((240, 352, 3), np.uint8)
+    img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+    contours = cv.findContours(img, cv.RETR_TREE, cv.CHAIN_APPROX_NONE)
+    contours = contours[0] if len(contours) == 2 else contours[1]
+    for c in contours:
+        size = cv.contourArea(c)
+        if size > val:
+            cv.drawContours(blank, [c], -1, color, 2)
+    return blank
+def headLegs(img):
+    first_white_pixel = 0
+    last_white_pixel = 0
+    height, width = img.shape[:2]
+    for y in range(height):
+        for x in range(width):
+            if img[y][x][0] == 255:
+                found = True
+                last_white_pixel = (x, y)
+                if not first_white_pixel:
+                    first_white_pixel = (x, y)
+    a = first_white_pixel
+    b = last_white_pixel
+    return img, (a, b)
+def drawLines(img1, coord1, img2, coord2, thick=2, color=(0, 0, 255)):
+    print(coord1)
+    print(coord2)
+    img1 = cv.circle(img1, coord1[0], 3, color, -1)
+    img1 = cv.circle(img1, coord1[1], 3, color, -1)
+    img2 = cv.circle(img2, coord2[0], 3, color, -1)
+    img2 = cv.circle(img2, coord2[1], 3, color, -1)
+    blank = cv.bitwise_or(img1, img2)
+    blank = cv.line(blank, coord1[0], coord2[0], color, thick)
+    blank = cv.line(blank, coord1[1], coord2[1], color, thick)
+    return blank
+def directionEstimation(coord_1, coord_2):
+    # coord_N: two point, HEAD AND LEGS
+    a = coord_1[1]
+    b = coord_2[1]
+    A = abs(a[0]-b[0])
+    B = abs(a[1]-b[1])
+    C = sqrt(pow(A, 2)+pow(B, 2))
+    y = degrees(acos(A/C))
+    return y
+def angleEstimation(coord_1, coord_2):
+    # Calculating the angle between two points
+    A = abs(coord_1[0]-coord_2[0])
+    B = abs(coord_1[1]-coord_2[1])
+    if A == 0:
+        return 90
+    elif B == 0:
+        return 0
+    else:
+        C = sqrt(pow(A, 2)+pow(B, 2))
+        y = degrees(acos(A/C))
+        return y
+def bitwise(img1, img2, point_1, point_2):
+    blank = np.zeros(((240, 352, 3)), np.uint8)
+    blank = cv.bitwise_or(img1, img2)
+    cv.circle(blank, point_1, 3, (255), -1)
+    cv.circle(blank, point_2, 3, (255), -1)
+    cv.line(blank, point_1, point_2, (255))
+    return blank
+def calculateAngle(img1, img2):
+    point_1 = deepestPoint(img1)
+    point_2 = deepestPoint(img2)
+    angle = angleEstimation(point_1, point_2)
+    picture_result = bitwise(img1, img2, point_1, point_2)
+    cv.putText(picture_result, "direc: {:0.2f} deg.".format(angle), (4, 23),
+               cv.FONT_HERSHEY_COMPLEX_SMALL, 1.5, (0, 255, 0), 1)
+    return (angle, picture_result)
+def drawPerspectiveFloor(dim=(720, 1080, 3)):
+    blank = np.zeros(dim, np.uint8)
+    h, w = blank.shape[:2]
+    center = b_point = [72, 540]
+    ribs = dim[0]//2 - center[0]
+    previous_angle = 0
+    colum_angle_range = {}
+    horizen_range = {}
+    fbw = 60
+    lbw = 75
+    # h += 100
+    # Horizen:
+    last = 0
+    adt = 0
+    cv.line(blank, (0, h//2+last+adt), (w, h//2+last+adt), (0, 0, 255), 1)
+    bg_range = h//2
+    for index in range(0, 17):
+        last += 6
+        end_range = h//2+last+adt
+        if end_range >= h:
+            horizen_range[chr(65+index)] = [bg_range, h-1]
+            break
+        else:
+            horizen_range[chr(65+index)] = [bg_range, end_range-1]
+        cv.line(blank, (0, end_range), (w, end_range), (0, 255, 0), 1)
+        bg_range = end_range
+        last = last+adt
+        adt += 2
+    for index in range(1, 25):
+        # fbw = 60
+        # lbw = 75
+        try:
+            # 50*index
+            cv.line(blank,  (w//2 + fbw*index, h//2),
+                    (w//2 + fbw*index + lbw*index, h), (0, 255, 0), 1)
+            # cv.line(blank,  (w//2 + fbw*index, h//2),
+            #         (w//2 + fbw*index - lbw*index, 0), (255, 0, 0), 1)
+            cv.line(blank,  (w//2 - fbw*index, h//2),
+                    (w//2 - fbw*index - lbw*index, h), (0, 255, 0), 1)
+            # cv.line(blank,  (w//2 - fbw*index, h//2),
+            #         (w//2 - fbw*index + lbw*index, 0), (0, 255, 0), 1)
+            base = fbw*index
+            # ribs = dim[0] - center[0]
+            # base = fbw*index
+            tire = sqrt(ribs**2+base**2)
+            curent_angle = degrees(acos(ribs/tire))
+            colum_angle_range[str(index)] = [previous_angle,curent_angle]
+            previous_angle = curent_angle
+        except:
+            print("except")
+    return blank, horizen_range, colum_angle_range
+def putFps(img, fps, late, pFps=True, pLate=False, color=(0, 255, 0), font=cv.FONT_HERSHEY_PLAIN, fontscale=3, thickness=2):
+    if pLate:
+        late = int(str(late).split(".")[-1][:4])
+        cv.putText(img, 'Latency: {:4} ms'.format(
+            late), (10, 40), font, fontscale, color, thickness)
+    if pFps:
+        cv.putText(img, 'FPS: {:0.1f}'.format(
+            fps), (10, 80), font, fontscale, color, thickness)
+    return img
+def fill(img, Gkernal=(5, 5)):
+    gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+    blur = cv.GaussianBlur(gray, Gkernal, 0)
+    canny = cv.Canny(blur, 200, 150)
+    kernel = np.ones((5, 5), np.uint8)
+    dilation = cv.dilate(img, kernel, iterations=2)
+    canny2 = cv.Canny(dilation, 200, 200)
+    canny2 = cv.cvtColor(canny2, cv.COLOR_GRAY2BGR)
+    return canny2
+def walkStatuFilter(wsl, ws):
+    # wsl: walking status list
+    # ws: walking status
+    wsl2 = []
+    for status in wsl:
+        if ws in status:
+            wsl2.append(status)
+    return wsl2
+def picDirec(path):
+    direc = path.split("/")
+    return "/".join(direc[:-1])
+def getCoordination(event, x, y, flags, param):
+    coordinat = []
+    if event == cv.EVENT_LBUTTONDOWN:
+        cv.circle(image, (x, y), 3, (255), -1)
+        coordinat.append(x)
+        coordinat.append(y)
+        coordinat_list.append(coordinat)
+# Default Parameters and initialisation
+direc = "GaitDatasetA-silh"
+last_direct = ""
+default_direc = "GaitDatasetA-silh/nhz"
+angles = ["00", "45", "90"]  # it should be called main angles
+images_step = 20
+while True:
+    # coordinat_list = []
+    # menu(2)
+    # choice = input("    ==> ")
+    # Remove This
+    coordinat_list = []
+    choice = "1"
+    if choice == "1":
+        #     path = default_direc
+        #     menu(3)
+        #     choice = input("    ==> ")
+        #     if choice in angles:
+        #         chosen_angel = choice
+        #         choice += "_" + str(randint(1, 4))
+        #     else:
+        #         print("Random!!")
+        #         chosen_angel = angles[randint(0, len(angles)-1)]
+        #         choice = chosen_angel
+        #         choice += "_" + str(randint(1, 4))
+        path = default_direc
+        # chosen_angel = angles[randint(0, len(angles)-1)]
+        chosen_angel = "90"
+        choice = chosen_angel
+        choice += "_" + str(randint(1, 4))
+        path += "/" + choice
+        Silhouette_pictures_list = listdir(path)
+        print("path:", path)
+        print("Choosed angle:", chosen_angel)
+        print("pictures to use:", len(Silhouette_pictures_list))
+        used_pictures_list = []
+        used_pictures_list.append(Silhouette_pictures_list[0])
+        # used_pictures_list.append(Silhouette_pictures_list[int(len(Silhouette_pictures_list)/2)])
+        used_pictures_list.append(Silhouette_pictures_list[-1])
+        # for number in range(0, len(Silhouette_pictures_list), images_step):
+        #     used_pictures_list.append(Silhouette_pictures_list[number])
+        cv.namedWindow(winname='Silhouette')
+        cv.setMouseCallback('Silhouette', getCoordination)
+        menu(4)
+        for index, image_name in enumerate(used_pictures_list):
+            # full_path = path+"/"+image_name
+            # cv.imshow('Silhouette', cv.imread(full_path))
+            image = cv.imread(path+"/"+image_name)
+            height, width = image.shape[:2]
+            height, width = height*2, width*2
+            image = cv.resize(image, (width, height))
+            print("Pic N{} : {} ".format(index, image_name))
+            while True:
+                cv.imshow('Silhouette', image)
+                if cv.waitKey(20) & 0xFF == 110:
+                    break
+        angles_list = calculateAngles(coordinat_list)
+        average_angel = anglesAverage(angles_list)
+        direction_estimation = nearestAngle(average_angel)
+        clear()
+        print("Coordinat List:")
+        print(">>", coordinat_list)
+        print("Angles List :")
+        print(">>", angles_list)
+        print("Average Angel :", average_angel)
+        print("The Estimation is:", direction_estimation)
+        if int(direction_estimation) == int(chosen_angel):
+        else:
+            print("This is bad ;), Keep Going bark")
+        last_direct = path
+    elif choice == "2":
+        if last_direct:
+            path = last_direct
+            break
+        else:
+            print("No Recent Direct")
+    elif choice == "3":
+        path = direc
+    elif choice == "4":
+        print("Not Yet")
+    elif choice == "5":
+        print("Not Yet")
+    else:
+        print("INVALID!!")
+    # Print The End
+    choice = input(">> Q for Quit! ")
+    if choice.lower() == "q":
+        break
+    clear(
+# direc_list = listdir(path)
+# chosen_direc = direc_list[randint(0, len(direc_list)-1)]
+# print(listdir(direc+"/"+chosen_direc))
+# chosen_angle = angle[randint(0, 2)]
+# pictures_path = direc+"/"+chosen_direc + \
+#     "/" + chosen_angle+"_"+str(randint(1, 4))
+# angle_pictures_list = listdir(pictures_path)
+# print(direc+"/"+chosen_direc+"/"+chosen_angle+"_"+str(randint(1, 4)))
+# # print(angle_pictures)
+# print(len(angle_pictures_list))
+# # used_pictures_number = int(len(angle_pictures)/10)
+# used_pictures_list = []
+# for number in range(0, len(angle_pictures_list), 10):
+#     used_pictures_list.append(angle_pictures_list[number])
+# # used_pictures_number = len(used_pictures_list)
+# print(pictures_path)
+# print(used_pictures_list[0])
+# img = cv.imread(pictures_path+"/"+used_pictures_list[0])
+# cv.imshow(used_pictures_list[0], img)
+# for index in range(0, 1):
+for index in range(0, len(simples_paths), 2):
+    img1 = cv.imread(simples_paths[index])
+    img2 = cv.imread(simples_paths[index+1])
+    angle = simples_paths[index][-12:-10]
+    cv.imshow(f"Original N{index//2+1}_1 - {angle}deg ", img1)
+    cv.imshow(f"Original N{index//2+1}_2 - {angle}deg ", img2)
+    # cv.imshow("Original{} - {}deg ".format(index%2, angle), img1)
+    # cv.imshow("Original{} - {}deg ".format(index%2+1, angle), img2)
+    # cv.imshow('Original_1', img1)
+    # cv.imshow('Original_2', img2)
+    # img1 = cv.cvtColor(img1, cv.COLOR_BGR2GRAY)
+    # img2 = cv.cvtColor(img2, cv.COLOR_BGR2GRAY)
+    countours_1 = noiseRemover(img1)
+    # img = cv.cvtColor(img, cv.COLOR_GRAY2BGR)
+    # img = cv.bitwise_and(img, blank2)
+    # cv.imshow('blank2', blank2)
+    img_1, coord_1 = headLegs(countours_1)
+    img_2, coord_2 = headLegs(countours_2)
+    result = drawLines(img_1, coord_1, img_2, coord_2)
+    angle = directionEstimation(coord_1, coord_2)
+    text = cv.putText(result, "direc: {:0.4}deg.".format(angle), (4, 23),
+                      cv.FONT_HERSHEY_COMPLEX_SMALL, 1.5, (0, 255, 0), 1)
+    cv.imshow(f"Result {index//2+1} ", result)
+# for index in range(2):
+#     blank = cv.line(blank, coordinate[index],
+#                     coordinate[index+2], (0, 0, 255), 2)
+# cv.imshow('Full', blank)
+# for j in range(0, len(test[0])):
+#     for i in range(0, len(test)):
+#         print(test[i][j])
+main_direc = "GaitDatasetC-silh"
+subjects = listdir(main_direc)
+walk_stats = {
+    "fn": "Normal Walk",
+    "fq": "Fast Walk",
+    "fs": "Slow Walk",
+    "fb": "with a bag",}
+history = []
+waiting_Key = int(1000/25)
+floor = drawPerspectiveFloor()[0]
+pTime = 0
+while True:
+    chosen_subject = str(choice(subjects))
+    # cause the folders are all in numbers
+    walking_status_samples = listdir(path(main_direc, chosen_subject))
+    walking_status = choice(list(walk_stats.keys()))
+    walking_status_samples = walkStatuFilter(
+        walking_status_samples, walking_status)
+    sequence = choice(walking_status_samples)
+    # sequence_number = "{:02}".format(randint(0,1)) if walking_status != "fn" else "{:02}".format(randint(0,3))
+    full_path = path(main_direc, chosen_subject, sequence)
+    if full_path in history:
+        continue
+    history.append(full_path)
+    pictures = listdir(full_path)
+    print("Path is:>>{:^33}<<".format(full_path))
+    for pic in pictures:
+        cTime = time()
+        latency = cTime-pTime
+        fps = 1/(cTime-pTime)
+        pTime = cTime
+        #############################################
+        img = cv.imread(full_path+"/"+pic)
+        img = cv.resize(img, tuple(reversed(floor.shape[:2])))
+        # img = fill(img)
+        scene = cv.bitwise_or(floor, img)
+        scene = putFps(scene, fps, latency, pLate=True)
+        cv.imshow(walk_stats[walking_status], resImg(scene, scale=0.9))
+        cv.waitKey(waiting_Key)
+        #############################################
+    # print(">> Continue (y/n) r (c)!")
+    # decision = input("==> ")   
+def BdataSetInfo(direc, inf, n_frmaes):
+    print("Path is >>{:^35}<<".format(direc))
+    print("       >> {} Frame <<".format(n_frmaes))
+    print(">>{:>15} : {:>03}".format('Subject Id', inf[0]))
+def prepareScene(pic, floor, direc, fps, late):
+    img = cv.imread(path(direc, pic))
+    img = cv.resize(img, tuple(reversed(floor.shape[:2])))
+    scene = cv.bitwise_or(img, floor)
+    scene = putFps(scene, fps, late, pLate=True)
+    return scene
+main_direc = "GaitDatasetB-silh"
+floor = drawPerspectiveFloor()[0]
+direc = "GaitDatasetB-silh"
+waiting_Key = int(1000/25)
+history = []
+pTime = time()
+walk_stats = {
+    'nm': 'Normal',
+    'cl': 'In Coat',
+    'bg': 'In Bag',}
+while True:
+    floor_2 = drawPerspectiveFloor()[0]
+    while not isfile(direc):
+        direc = path(direc, choice(listdir(direc)))
+    direc = picDirec(direc)
+    pictures = listdir(direc)
+    inf = pictures[0][:-3].split("-")
+    BdataSetInfo(direc, inf, len(pictures))
+    for index, pic in enumerate(pictures):
+        if index == 0:
+            img = cv.resize(img, tuple(reversed(floor.shape[:2])))
+            floor = cv.bitwise_or(drawPerspectiveFloor()[0], img)
+        cTime = time()
+        scene = prepareScene(pic, floor, direc, 1/(cTime-pTime), cTime-pTime)
+        # floor_2 = cv.bitwise_or(scene, floor_2)
+        # cv.imshow('data Set B', floor_2)
+        cv.imshow('data Set B', scene)
+        pTime = cTime
+        if cv.waitKey(waiting_Key) & 0xFF == 115:
+            break
+    if cv.waitKey() & 0xFF == 113:
+        break
+    direc = main_direc
+# sample = subjects[randint(0,len(subjects)-1)]
+# sample = listdir
+starting_time = time()
+waiting_Key = int(1000/25)
+angles = ["00", "45", "90"]
+main_direc = "GaitDatasetA-silh"
+path_changed = False
+# floor = drawPerspectiveFloor(img.shape)
+floor = drawPerspectiveFloor()[0]
+pTime = 0        
+while True:
+    if not path_changed:
+        people_folders = listdir(main_direc)
+        choosen_guy = people_folders[randint(0, len(people_folders)-1)]
+        choosen_angle = angles[randint(0, len(angles)-1)]
+        # if choosen_angle != "45":
+        #     continue
+        choosen_set = str(randint(1, 4))
+        path = main_direc + "/"+choosen_guy+"/"+choosen_angle+"_"+choosen_set
+        pictures = listdir(path)
+    else:
+        pictures = listdir(path_changed)
+        path_changed = False
+    print("Path is:>>{:^30}<<".format(path))
+    for pic in pictures:
+        cTime = time()
+        latency = cTime-pTime
+        fps = 1/(cTime-pTime)
+        pTime = cTime
+        img = cv.imread(path+"/"+pic)
+        img = cv.resize(img, (1080, 720))
+        # img = fill(img)
+        scene = cv.bitwise_or(floor, img)
+        putFps(scene, fps, latency, pLate=True)
+        cv.imshow('Video test', scene)
+        # cv.imshow('Video test', img)
+    # print(">> Continue (y/n) r (c)!")
+    # choice = input("==> ")
+    choice = "y"
+    cv.destroyAllWindows()
+    if choice.lower() == "n":
+        break
+    elif choice.lower() == "c":
+        print(">>1. Waiting_Key  == {}".format(waiting_Key))
+        print(">>2. Path_changed == {}".format(path_changed))
+        choice = input("==> ")
+        if choice in ["1", "2"]:
+            if choice == "1":
+                try:
+                    waiting_Key = int(input("New Waiting Key ==> "))
+                except BaseException as base_Exception:
+                    print(base_Exception)
+            elif choice == "2":
+                Path = input("New Path Is ==> ")
+print("\a\a\a>> Time: {} Minute!! {:.3f} Second!!".format(
+    int((time()-starting_time)/60), (time()-starting_time) % 60))
+  
+def rangeLocation(point, horizen_range):
+    y = point[1]
+    for horizen, horizen_range in horizen_range.items():
+        if y in range(horizen_range[0], horizen_range[1]+1):
+            return horizen
+    else:
+        return False
+def angleLocation(point, angle_range, dim=(720, 1080), center=(72, 540)):
+    # Mode line, column
+    ribs = point[0] - center[0]
+    base = abs(center[1] - point[1])
+    tire = sqrt(ribs**2+base**2)
+    angle = degrees(acos(ribs/tire))
+    for column, angle_rng in angle_range.items():
+        if angle_rng[0] < angle <= angle_rng[1]:
+            return column
+    print("*"*20)
+    print('ribs', ribs)
+    print('base', base)
+    print('tire', tire)
+    print('angle', angle)
+    return False
+def pickHorizen(horizen_range, occupied_ranges, img):
+    horizen_range2 = horizen_range
+    horizen_range = [[horizen, hrz_rng]
+                     for horizen, hrz_rng in horizen_range.items()]
+    # [['A',[360,366]], ['B',[365,375]], ['C',[376,366]]]
+    occupied_ranges = [[horizen, pixels]
+                       for horizen, pixels in occupied_ranges.items()]
+    # [['A',xxx_1], ['B',xxx_2], ['C',xxx_3]]
+    last_pixel = deepestPoint(img)
+    last_pixel_horizen = rangeLocation(last_pixel, horizen_range2)
+    last_occupied_horizen_range = horizen_range2[last_pixel_horizen]
+    pixel_deep_in_horizen = last_pixel[1]-last_occupied_horizen_range[0]
+    last_occupied_horizen_range2 = last_occupied_horizen_range
+    last_occupied_horizen_range = last_occupied_horizen_range[1] - \
+        last_occupied_horizen_range[0]
+    # if occupied_ranges[-1][-1] >= (1/3)*horizen_range.get(occupied_ranges[-1][0]):
+    # if occupied_ranges[-1][0] == 'A' or occupied_ranges[-1][-1] >= (1/3)*(horizen_range.get(occupied_ranges[-1][0])[1]-horizen_range.get(occupied_ranges[-1][0])[0]):
+    print('>> horizen_range:\n', horizen_range)
+    print('>> occupied_ranges:\n', occupied_ranges)
+    print('>> last_pixel:\n', last_pixel)
+    print('>> last_pixel_horizen:\n', last_pixel_horizen)
+    print('>> last_horizen_range:\n', last_occupied_horizen_range)
+    print('>> pixel_deep_in_horizen:\n', pixel_deep_in_horizen)
+    print()
+    if occupied_ranges[-1][0] == 'A' or pixel_deep_in_horizen >= (1/3)*last_occupied_horizen_range:
+        # return last_pixel_horizen
+        return occupied_ranges[-1][0]
+    # elif len(occupied_ranges)>=2:
+    else:
+        print("else")
+        return occupied_ranges[-2][0]
+    # else:
+    #     pass
+def equalColors(color_1, color_2):
+    for index in range(3):
+        if int(color_1[index]) != int(color_2[index]):
+            return False
+    return True
+    # if color_1[0] == color_1[1] == color_1[2] == 255:
+    #     colors_set.append(list(color_1))
+    # return color_1 == color_2
+# colors_set = []
+direc = "GaitDatasetB-silh"
+while not isfile(direc):
+    direc = path(direc, choice(listdir(direc)))
+direc = picDirec(direc)
+picture = listdir(direc)[0]
+picture = cv.imread(path(direc, picture))
+picture = cv. resize(picture, (1080, 720))
+floor, horizen_range, angel_range = drawPerspectiveFloor()[:3]
+h, w = floor.shape[:2]
+floor = cv.bitwise_or(floor, picture)
+# cv.rectangle(floor, (w//2, h//2+40), (w//4*3, h//2+80), (255, 255, 255), -1)
+horizen_range_occupied = {}
+angle_range_occupied = {}
+# ranges = [area_range for area_range in horizen_range.items()]
+# Printing horizens and it's ranges:
+for horizen, hrz_rng in horizen_range.items():
+    print(horizen, hrz_rng)
+    # break
+# calculating how many pixel in every horizen
+for horizen, hrz_rng in horizen_range.items():
+    for line in range(hrz_rng[0], hrz_rng[1]+1):
+        for column in range(w//2, w):
+            if all(floor[line][column]):
+                # if equalColors(floor[line][colon], [255, 255, 255]):
+                horizen_range_occupied[horizen] = horizen_range_occupied.get(
+                    horizen, 0) + 1
+# print(colors_set)
+# Printing occupied pixels in every Horizens
+print(horizen_range_occupied.items())
+for horizen, occupied_pixels in horizen_range_occupied.items():
+    print(f"{horizen} ==> {occupied_pixels} Pixel")
+# printing the choosen horizen:
+picked_horizen = pickHorizen(horizen_range, horizen_range_occupied, floor)
+print("the horizen Picked is ==>", picked_horizen)
+# calculating how many pixel in every angle
+picked_range = horizen_range[picked_horizen]
+for line in range(picked_range[0], picked_range[1]+1):
+    for column in range(w//2+20, w):
+        if all(floor[line][column]):
+            # print("lol")
+            point_angle = angleLocation((line, column), angel_range)
+            if column < w//2:
+                point_angle = "-"+point_angle
+                # angle_range_occupied["-"+point_angle] = angle_range_occupied.get(
+                #     "-"+point_angle, 0)+1
+            else:
+                point_angle = "+"+point_angle
+                # angle_range_occupied["-"+point_angle] = angle_range_occupied.get(
+                #     "-"+point_angle, 0)+1
+            angle_range_occupied[point_angle] = angle_range_occupied.get(
+                point_angle, 0)+1
+print(angle_range_occupied)
+for column, pixels in angle_range_occupied.items():
+    print(f"{column} ==> {pixels} Pixel")
+img = listdir(direc)[-1]
+picture = cv.imread(path(direc, img))
+picture = cv. resize(picture, (1080, 720))
+floor = cv.bitwise_or(floor, picture)
+
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+# h == 72 / w == 540
+# print(abspath(__file__))
+
+# duration = 1000  # milliseconds
+# freq = 500  # Hz
+# winsound.Beep(freq, duration)
+
+# # path = Path(r"script\images\walk6.jpg")
+# # print(type(Path(__file__).parent.absolute()))
+
+# walkers = []
+# # walker = cv.imread(r"images\walk1.jpg")
+# walker = cv.imread(r"images\blender.jpeg")
+# cv.imshow('Walker', resImg(walker, dim=600))
+# # for pic in os.listdir(r"script\images"):
+# #     walkers.append(pic)
+
+
+# gray = cv.cvtColor(walker, cv.COLOR_BGR2GRAY)
+# # cv.imshow('Gray Walker', resImg(gray, dim=600))
+
+
+# # Blur:
+# blurred = cv.GaussianBlur(walker, (5, 5), 0)
+# cv.imshow('Blurred Walker', resImg(blurred, dim=600))
+
+# # blurred = cv.medianBlur(walker, 5)
+# # cv.imshow('Median Blurred Walker', resImg(blurred, dim=600))
+
+
+# # # laplacion_edge:
+# # edges = cv.Laplacian(gray, cv.CV_64F)
+# # edges = np.uint8(np.absolute(edges))
+# # cv.imshow('Lap Edge', resImg(edges, dim=500))
+
+# # # Canny:
+# # edges = cv.Canny(blurred, 150, 175)
+# # cv.imshow('Canny Edges', resImg(edges, dim=500))
+
+# # blurred_float = blurred.astype(np.float32) / 255.0
+# # edgeDetector = cv.ximgproc.createStructuredEdgeDetection("model.yml")
+# # edges = edgeDetector.detectEdges(blurred_float) * 255.0
+# # cv.imwrite('edge-raw.jpg', edges)
+
+# #######################################################
+
+# blurred_float = blurred.astype(np.float32) / 255.0
+# edgeDetector = cv.ximgproc.createStructuredEdgeDetection("model.yml")
+# edges = edgeDetector.detectEdges(blurred_float) * 255.0
+# cv.imwrite('edge-raw.jpg', edges)
+
+
+# def SaltPepperNoise(edgeImg):
+#     count = 0
+#     lastMedian = edgeImg
+#     median = cv.medianBlur(edgeImg, 3)
+#     while not np.array_equal(lastMedian, median):
+#         zeroed = np.invert(np.logical_and(median, edgeImg))
+#         edgeImg[zeroed] = 0
+#         count = count + 1
+#         if count > 70:
+#             break
+#         lastMedian = median
+#         median = cv.medianBlur(edgeImg, 3)
+
+
+# edges_u = np.asarray(edges, np.uint8)
+# SaltPepperNoise(edges_u)
+
+# cv.imshow('edge.jpg', resImg(edges_u, dim=600))
+# # cv.imwrite('edge.jpg', edges_)
+# # image_display('edge.jpg')
+# # edge = cv.imread('edge.jpg')
+# # cv.imshow('Edges', resImg(edge, dim=600))
+
+
+# #######################################################
+
+
+# mask = np.zeros_like(edges_u)
+# cv.fillPoly(mask, [contour], 255)
+# # calculate sure foreground area by dilating the mask
+# mapFg = cv.erode(mask, np.ones((5, 5), np.uint8), iterations=10)
+# # mark inital mask as "probably background"
+# # and mapFg as sure foreground
+# trimap = np.copy(mask)
+# trimap[mask == 0] = cv.GC_BGD
+# trimap[mask == 255] = cv.GC_PR_BGD
+# trimap[mapFg == 255] = cv.GC_FGD
+# # visualize trimap
+# trimap_print = np.copy(trimap)
+# trimap_print[trimap_print == cv.GC_PR_BGD] = 128
+# trimap_print[trimap_print == cv.GC_FGD] = 255
+
+# cv.imshow('trimap_print', resImg(trimap_print, dim=500))
+# # cv.imwrite('trimap.png', trimap_print)
+# # image_display('trimap.png')
+
+# #######################################################
+# capture = cv.VideoCapture("videos/people 2.mp4")
+# # capture variable is an instance of this VideoCapture class
+# frames = 0
+# f_before = 0
+
+# while True:
+#     isTrue, frame = capture.read()
+#     frames += 1
+#     f_after = time()
+#     # print(f"fps: {1/(f_after-f_before)} ")
+#     f_before = time()
+#     # frame  : is a frame from the video
+#     # isTrue : a boolean it says whether the frame was successfully ready or not
+#     if not isTrue:
+#         break
+
+#     # if cv.waitKey(30) & 0xFF == ord('q'):
+#     #     # cv.waitKey(n): here the n represent how much time
+#     #     # the frame will be displayed in milliseconde
+#     #     break
+
+
+# print(f"There is : {frames} Frame ")
+
+# capture.release()  # release capture pointer
+# cv.destroyAllWindows()
+
+
+# # cv.waitKey(0)
+# # cv.destroyAllWindows()
+
+
+#######################################################
+
+
+# # initialize the HOG descriptor/person detector
+# hog = cv.HOGDescriptor()
+# hog.setSVMDetector(cv.HOGDescriptor_getDefaultPeopleDetector())
+
+# cv.startWindowThread()
+# name = "images/walk3.jpg"
+# frame = cv.imread(name)
+# h, w = frame.shape[:2]
+
+# # frame = cv.GaussianBlur(frame, (5, 5), 7)
+# # # resizing for faster detection
+# frame = cv.resize(frame, (600, int(600 * h/w)))
+# # # using a greyscale picture, also for faster detection
+# gray = cv.cvtColor(frame, cv.COLOR_RGB2GRAY)
+
+# boxes, weights = hog.detectMultiScale(gray, winStride=(8, 8))
+
+# print(boxes)
+# print(type(boxes))
+# print("*"*30)
+# # detect people in the image
+# # returns the bounding boxes for the detected objects
+# boxes = np.array([[x, y, x + w, y + h] for (x, y, w, h) in boxes])
+
+# print(boxes)
+# print(type(boxes))
+
+
+# for (xA, yA, xB, yB) in boxes:
+#     # display the detected boxes in the colour picture
+#     roi = frame[yA:yB, xA:xB]
+#     # cv.rectangle(frame, (xA, yA), (xB, yB), (0, 255, 0), 2)
+#     # roi = frame[xA:yA, xA + xB:yA + yB]
+#     # cv.rectangle(frame, (xA, yA), (xB, yB),(0, 255, 0), 2)
+#     # cv.rectangle(frame, (xA, yA), (xA + xB, yA + yB),(0, 255, 0), 2)
+
+
+# ret, thresh = cv.threshold(cv.cvtColor(
+#     roi, cv.COLOR_RGB2GRAY), 127, 255, cv.THRESH_BINARY)
+# # adaptive_thresh
+# # thresh = cv.adaptiveThreshold(
+# #     cv.cvtColor(roi, cv.COLOR_RGB2GRAY), 255, cv.ADAPTIVE_THRESH_MEAN_C, cv.THRESH_BINARY_INV, 11, 3)
+
+# # cv.imshow("ROI", resImg(roi, dim=600))
+# cv.imshow("ROI", thresh)
+# cv.imshow("Frame", resImg(frame))
+
+
+# print("DONE!!")
+# # finally, close the window
+# cv.waitKey()
+# cv.destroyAllWindows()
+
+#######################################################
+
+# print(abspath(__file__))
+# for i in range(5):
+#     print(random())
+#     print(randint(0,2))
+#     print()
+
+#######################################################
+
+# img = np.zeros((500,300,3), np.uint8)
+# cv.rectangle(img, (0,50), (50,100),(255), 2)
+
+# # # Draw a Cercle
+# # h, w = blank_image.shape[:2]
+# cv.circle(img, (250,400), 20, (255), -1)
+
+# cv.imshow("img", img)
+# cv.waitKey()
+# cv.destroyAllWindows()
+
+#######################################################
+
+# def nearestAngle(angle):
+#     difference = []
+#     # return min(abs(angle-0),
+#     #            abs(angle-45),
+#     #            abs(angle-90)
+#     #            )
+#     difference.append(abs(angle-0))
+#     difference.append(abs(angle-45))
+#     difference.append(abs(angle-90))
+#     return angles[difference.index(min(difference))]
+
+
+# angles = [0, 45, 90]
+# print("Nearest Angle for {} is {}".format(45, nearestAngle(45)))
+# print("Nearest Angle for {} is {}".format(43, nearestAngle(43)))
+# print("Nearest Angle for {} is {}".format(1, nearestAngle(1)))
+# print("Nearest Angle for {} is {}".format(0, nearestAngle(0)))
+# print("Nearest Angle for {} is {}".format(80, nearestAngle(80)))
+# print("Nearest Angle for {} is {}".format(70, nearestAngle(70)))
+# print("Nearest Angle for {} is {}".format(34, nearestAngle(34)))
+
+
+#######################################################
+#######################################################
+# from math import acos, cos, sqrt, degrees
+
+# # print(cos(45))
+# # print(acos(0.5))
+# # print(acos(cos(45)))
+
+# print(degrees(acos(2/sqrt(8))))
+#######################################################
+
+# test = [
+#     [0, 3, 6, 9],
+#     [1, 4, 7, 10],
+#     [2, 5, 8, 11]
+# ]
+
+# for j in range(0, len(test[0])):
+#     for i in range(0, len(test)):
+#         print(test[i][j])
+#######################################################
+#######################################################
+
+# time1 = time()
+# # hna rana nahakmo point lowel lfo9 well taht
+# # bch n3rfo lmayll wzid na3arfoo asq raw y9areb ella yrooh
+# # paths = [
+# #     "GaitDatasetA-silh/nhz/00_2/nhz-00_2-001.png",
+# #     "GaitDatasetA-silh/nhz/00_2/nhz-00_2-060.png"
+# #     "GaitDatasetA-silh/nhz/45_2/nhz-45_2-001.png",
+# #     "GaitDatasetA-silh/nhz/45_2/nhz-45_2-111.png"
+# #     "GaitDatasetA-silh/nhz/90_2/nhz-90_2-001.png",
+# #     "GaitDatasetA-silh/nhz/90_2/nhz-90_2-097.png"
+# # ]
+# # paths = [
+# #     "GaitDatasetA-silh/nhz/00_2/nhz-00_2-001.png",
+# #     "GaitDatasetA-silh/nhz/00_2/nhz-00_2-060.png"
+# # ]
+# paths = [
+#     "GaitDatasetA-silh/nhz/45_2/nhz-45_2-001.png",
+#     "GaitDatasetA-silh/nhz/45_2/nhz-45_2-111.png"
+# ]
+# # paths = [
+# #     "GaitDatasetA-silh/nhz/90_2/nhz-90_2-001.png",
+# #     "GaitDatasetA-silh/nhz/90_2/nhz-90_2-097.png"
+# # ]
+# blank = np.zeros((240, 352, 3), np.uint8)
+# blank2 = np.zeros((240, 352, 3), np.uint8)
+# # img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+
+# # print(len(img))
+# # print(len(img[0]))
+# # print(img[0, 0])
+# # print(img.shape)
+# coordinate = []
+
+# for index, image_path in enumerate(paths):
+#     img = cv.imread(image_path)
+#     cv.imshow(f'original{index}', img)
+#     img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+
+#     first_white_pixel = 0
+#     last_white_pixel = 0
+#     found = False
+
+#     contours = cv.findContours(img, cv.RETR_TREE, cv.CHAIN_APPROX_NONE)
+#     contours = contours[0] if len(contours) == 2 else contours[1]
+#     for c in contours:
+#         size = cv.contourArea(c)
+#         if size > 1000:
+#             cv.drawContours(blank2, [c], -1, (255, 255, 255), 2)
+#     img = cv.cvtColor(img, cv.COLOR_GRAY2BGR)
+#     img = cv.bitwise_and(img, blank2)
+#     # cv.imshow('blank2', blank2)
+
+#     height, width = img.shape[:2]
+#     for y in range(height):
+#         for x in range(width):
+#             if img[y][x][0] == 255:
+#                 found = True
+#                 last_white_pixel = (x, y)
+#                 if not first_white_pixel:
+#                     first_white_pixel = (x, y)
+
+#     a = first_white_pixel
+#     b = last_white_pixel
+#     coordinate.append(a)
+#     coordinate.append(b)
+#     img = cv.circle(img, a, 3, (0, 0, 255), -1)
+#     img = cv.circle(img, b, 3, (0, 0, 255), -1)
+#     cv.imshow(f"simple{index}", img)
+
+#     blank = cv.bitwise_or(blank, img)
+
+# for index in range(2):
+#     blank = cv.line(blank, coordinate[index],
+#                     coordinate[index+2], (0, 0, 255), 2)
+
+# cv.imshow('Full', blank)
+
+
+# # for j in range(0, len(test[0])):
+# #     for i in range(0, len(test)):
+# #         print(test[i][j])
+
+# print("{:0.3}s".format(time()-time1))
+# cv.waitKey()
+# cv.destroyAllWindows()
+#######################################################
+# files = []
+# text = "test"
+# files = open(text+".txt", "w")
+
+# files.write("test")
+# files.write("test2")
+# files.writelines("3")
+# files.writelines("34")
+
+# files.close()
+
+# test = open("00.txt", "r")
+# line = test.readline()
+# while line:
+#     print(line, end="")
+#     line=test.readline()
+# test.close()
+########################################################
+# angles = ["00", "45", "90"]
+
+# for index, angle_file in enumerate(angles):
+#     file = open(angle_file+".txt", "r")
+#     angle = file.readline()[:-2]
+#     min_ang = max_ang = float(angle)
+#     average = []
+#     while angle:
+#         angle = float(angle)
+#         average.append(angle)
+#         min_ang = min(angle, min_ang)
+#         max_ang = max(angle, max_ang)
+#         angle = file.readline()
+#     print(f">>>>>>>>> {angle_file} <<<<<<<<<")
+#     print(f"Min Angle  ==>{min_ang}")
+#     print(f"Max Angle  ==>{max_ang}")
+#     print(f"Average is ==>{sum(average)/len(average)}")
+#     print("*"*30)
+#     file.close()
+#######################################################
+# system('say "your program has finished"')
+#######################################################
+# with open("abnormal.txt", "r") as abnormal:
+#     names = []
+#     line = abnormal.readline()[:-1]
+#     while line:
+#         names.append(line.split('/')[-1])
+#         line = abnormal.readline()[:-1]
+
+#     names = sorted(set(names))
+#     print(">> Names:")
+#     for name in names:
+#         print("{:>20}".format(name))
+#######################################################
+# def child():
+#    print('\nA new child ',  getpid())
+#    _exit(0)
+# def parent():
+#    while True:
+#       newpid = fork()
+#       if newpid == 0:
+#          child()
+#       else:
+#          pids = (getpid(), newpid)
+#          print("parent: %d, child: %d\n" % pids)
+#       reply = input("q for quit / c for new fork")
+#       if reply == 'c':
+#           continue
+#       else:
+#           break
+
+# parent()
+#######################################################
+# try:
+#     print(5/0)
+# except:
+#     print("hh")
+#######################################################
+# print("-"*30)
+# direc = getcwd()
+# print("1", direc)
+
+# chdir("M:\Documents\Projects\End Of Study\End of Study Project\scripts\script")
+# print("2", getcwd())
+
+# chdir(direc)
+# print("3", getcwd())
+
+# print("-"*30)
+
+#######################################################
+
+# def deepestPoint(img):
+#     # img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+#     last_pixel = 0, 0
+#     height, width = img.shape[:2]
+#     for y in range(height):
+#         for x in range(width):
+#             if img[y][x][0] == img[y][x][1] == img[y][x][2] == 255:
+#                 # if img[y][x] == 255:
+#                 last_pixel = (x, y)
+#     return last_pixel
+
+
+# img = cv.imread("zc-00_3-001.png")
+# img = cv.imread("GaitDatasetA-silh/lsl/90_2/lsl-90_2-086.png")
+# print(img.shape, len(img))
+# print(img[0][0])
+# blank = np.zeros((240, 352, 3), np.uint8)
+# gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+# print(gray[0][0])
+# # img = cv.bitwise_or(img, gray)
+# point = deepestPoint(img)
+# print(point)
+# cv.circle(img, point, 3, (255), -1)
+# cv.imshow("img", img)
+
+# cv.waitKey()
+# cv.destroyAllWindows()
+
+#######################################################
+# pictures = []
+# with open("primary result/abnormal.txt", "r") as file:
+#     pic = file.readline()
+#     while pic:
+#         pictures.append(pic[:-1])
+#         pic = file.readline()
+# print(pictures)
+# print(len(pictures))
+
+
+# for pic in pictures:
+#     img = cv.imread(pic)
+#     # no_noise_pic = noiseRemover(img)
+#     no_noise_pic = img
+#     point = deepestPoint(no_noise_pic)
+#     cv.circle(no_noise_pic, point, 3, (255), -1)
+
+#     while True:
+#         cv.imshow(pic[-16:-1], no_noise_pic)
+#         if cv.waitKey(20) & 0xFF == 110:
+#             break
+# cv.destroyAllWindows()
+
+#######################################################
+
+# import pyttsx3
+# engine = pyttsx3.init()
+# engine.say("I will speak this text")
+# engine.runAndWait()
+
+#######################################################
+# # How to Copy a File in Python
+
+# import shutil
+
+# original = r'original path where the file is currently stored\file name.file extension'
+# target = r'target path where the file will be copied\file name.file extension'
+
+# shutil.copyfile(original, target)
+######################################################
+# img_test = np.zeros((5,3, 1), np.uint8)
+# print(img_test.shape)
+# print(img_test)
+# print(len(img_test))
+# print(len(img_test[0]))
+# print(len(img_test[1]))
+# print(len(img_test[2]))
+# print(len(img_test[3]))
+# print(len(img_test[4]))
+#######################################################
+#######################################################
+# blank = np.zeros((3, 5), np.uint8)
+# print(blank[0])
+# print(blank.shape)
+# print(blank)
+
+# for line in range(len(blank)):
+#     for colon in range(len(blank[0])):
+#         print(blank[line][colon])
+
+#######################################################
+# # bluring te3 pic mel sillh
+# img = cv.imread('DataSetASamples/zc-00_3-001.png')
+# img = cv.resize(img, (1080, 720))
+# img2 = cv.GaussianBlur(img, (7, 7), 0)
+# result = cv.subtract(img, img2)
+
+# cv.imshow('img', img)
+# cv.imshow('img2', img2)
+# cv.imshow('result', result)
+
+
+# cv.waitKey()
+# cv.destroyAllWindows()
+#######################################################
+# # habit nsayi ze3ma bch nkhyyr ana kima nhab 9falli
+# img = cv.imread('DataSetASamples/zc-00_3-001.png')
+# cv.imshow('img', img)
+
+# while cv.waitKey():
+#     if 0xFF == 115:
+#         print('it is s')
+#     if 0xFF == 110:
+#         print('it is n')
+
+# cv.destroyAllWindows()
+#######################################################
+# def drawPerspectiveFloor(dim=(720, 1080, 3)):
+#     blank = np.zeros(dim, np.uint8)
+#     h, w = blank.shape[:2]
+#     fbw = 60
+#     lbw = 75
+#     # h += 100
+#     # Midlle:
+#     cv.line(blank, (w//2, h//2), (w//2, h), (0, 0, 255), 1)
+#     # Right:
+#     for index in range(1, 25):
+#         try:
+#             #
+#             cv.line(blank,  (w//2 + fbw*index, h//2),
+#                     (w//2 + fbw*index + lbw*index, h), (0, 255, 0), 1)
+#             cv.line(blank,  (w//2 + fbw*index, h//2),
+#                     (w//2 + fbw*index - lbw*index, 0), (255, 0, 0), 1)
+#         except:
+#             print("except")
+#     # Left:
+#     for index in range(1, 25):
+#         try:
+#             cv.line(blank,  (w//2 - fbw*index, h//2),
+#                     (w//2 - fbw*index - lbw*index, h), (0, 255, 0), 1)
+#             cv.line(blank,  (w//2 - fbw*index, h//2),
+#                     (w//2 - fbw*index + lbw*index, 0), (0, 255, 0), 1)
+#         except:
+#             print("except")
+#     # Horizen:
+#     last = 0
+#     adt = 0
+#     cv.line(blank, (0, h//2+last+adt), (w, h//2+last+adt), (0, 0, 255), 1)
+#     for index in range(0, 220):
+#         last += 7
+#         cv.line(blank, (0, h//2+last+adt), (w, h//2+last+adt), (0, 255, 0), 1)
+#         last = last+adt
+#         adt += 1
+#     return blank
+
+
+# img_1 = cv.imread('DataSetASamples/zc-00_3-001.png')
+# img_2 = cv.imread('DataSetASamples/zc-00_3-044.png')
+# floor = drawPerspectiveFloor((720, 1080, 3))
+# img_1 = cv.resize(img_1, (1080, 720))
+# scene = cv.bitwise_or(img_1, floor)
+# scene[72][540] = [255,255,255]
+# ROI = scene[69:77,530:550] # h == 72 / w == 540
+# plt.imshow(ROI)
+# # plt.imshow(scene)
+# plt.show()
+# print("hh")
+#######################################################
+# img = cv.imread('DataSetASamples/zc-00_3-001.png')
+# h,w = img.shape[:2]
+# print(img[h-1][w-1])
+
+
+#######################################################
+#
+# def drawPerspectiveFloor(dim=(720, 1080, 3)):
+#     blank = np.zeros(dim, np.uint8)
+#     h, w = blank.shape[:2]
+#     center = b_point = [72, 540]
+#     ribs = dim[0]//2 - center[0]
+#     previous_angle = 0
+#     colum_angle_range = {}
+#     horizen_range = {}
+#     fbw = 60
+#     lbw = 75
+#     # h += 100
+#     # Horizen:
+#     last = 0
+#     adt = 0
+#     cv.line(blank, (0, h//2+last+adt), (w, h//2+last+adt), (0, 0, 255), 1)
+#     bg_range = h//2
+#     # 15
+#     for index in range(0, 17):
+#         last += 6
+#         end_range = h//2+last+adt
+#         if end_range >= h:
+#             horizen_range[chr(65+index)] = [bg_range, h-1]
+#             break
+#         else:
+#             horizen_range[chr(65+index)] = [bg_range, end_range-1]
+
+#         cv.line(blank, (0, end_range), (w, end_range), (0, 255, 0), 1)
+#         bg_range = end_range
+#         last = last+adt
+#         adt += 2
+
+#     # Midlle:
+#     cv.line(blank, (w//2, h//2), (w//2, h), (0, 0, 255), 1)
+
+#     # Right + Left:
+#     for index in range(1, 25):
+#         # fbw = 60
+#         # lbw = 75
+#         try:
+#             # 50*index
+#             cv.line(blank,  (w//2 + fbw*index, h//2),
+#                     (w//2 + fbw*index + lbw*index, h), (0, 255, 0), 1)
+#             # cv.line(blank,  (w//2 + fbw*index, h//2),
+#             #         (w//2 + fbw*index - lbw*index, 0), (255, 0, 0), 1)
+#             cv.line(blank,  (w//2 - fbw*index, h//2),
+#                     (w//2 - fbw*index - lbw*index, h), (0, 255, 0), 1)
+#             # cv.line(blank,  (w//2 - fbw*index, h//2),
+#             #         (w//2 - fbw*index + lbw*index, 0), (0, 255, 0), 1)
+#             base = fbw*index
+#             # ribs = dim[0] - center[0]
+#             # base = fbw*index
+#             tire = sqrt(ribs**2+base**2)
+#             curent_angle = degrees(acos(ribs/tire))
+#             colum_angle_range[str(index)] = [previous_angle, curent_angle]
+#             previous_angle = curent_angle
+#         except:
+#             print("except")
+
+#     return blank, horizen_range, colum_angle_range
+
+
+# def deepestPoint(img):
+#     # img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+#     last_pixel = 0, 0
+#     height, width = img.shape[:2]
+#     for y in range(height):
+#         for x in range(width):
+#             if img[y][x][0] == img[y][x][1] == img[y][x][2] == 255:
+#                 # if img[y][x] == 255:
+#                 last_pixel = (x, y)
+#     return last_pixel
+
+
+# def rangeLocation(horizen_range, point):
+#     x = point[0]
+#     for horizen, horizen_range in horizen_range.items():
+#         if x in range(*horizen_range):
+#             return horizen
+#     else:
+#         return False
+
+
+# def pickHorizen(horizen_range, occupied_ranges, img):
+#     horizen_range2 = horizen_range
+#     occupied_ranges = [[horizen, pixels]
+#                        for horizen, pixels in occupied_ranges.items()]
+#     horizen_range = [[horizen, hrz_rng]
+#                      for horizen, hrz_rng in horizen_range.items()]
+#     last_pixel = deepestPoint(img)
+#     last_pixel_horizen = rangeLocation(horizen_range2, last_pixel)
+#     last_horizen_range = horizen_range[-1][-1]
+#     pixel_deep_in_horizen = last_pixel[0]-last_horizen_range[0]
+#     last_horizen_range2 = last_horizen_range
+#     last_horizen_range = last_horizen_range[1] - last_horizen_range[0]
+
+#     # if occupied_ranges[-1][-1] >= (1/3)*horizen_range.get(occupied_ranges[-1][0]):
+#     # if occupied_ranges[-1][0] == 'A' or occupied_ranges[-1][-1] >= (1/3)*(horizen_range.get(occupied_ranges[-1][0])[1]-horizen_range.get(occupied_ranges[-1][0])[0]):
+#     if occupied_ranges[-1][0] == 'A' or pixel_deep_in_horizen >= (1/3)*last_horizen_range:
+#         print('>> occupied_ranges:\n', occupied_ranges)
+#         print('>> horizen_range:\n', horizen_range)
+#         print('>> last_pixel:\n', last_pixel)
+#         print('>> last_pixel_horizen:\n', last_pixel_horizen)
+#         print('>> last_horizen_range:\n', last_horizen_range2)
+#         print('>> pixel_deep_in_horizen:\n', pixel_deep_in_horizen)
+#         print()
+#         return occupied_ranges[-1][0]
+#     # elif len(occupied_ranges)>=2:
+#     else:
+#         print("else")
+#         return occupied_ranges[-2][0]
+#     # else:
+#     #     pass
+
+
+# def equalColors(color_1, color_2):
+#     for index in range(3):
+#         if int(color_1[index]) != int(color_2[index]):
+#             return False
+#     return True
+#     # if color_1[0] == color_1[1] == color_1[2] == 255:
+#     #     colors_set.append(list(color_1))
+#     # return color_1 == color_2
+
+
+# # colors_set = []
+# floor, horizen_range = drawPerspectiveFloor()[:2]
+# h, w = floor.shape[:2]
+# cv.rectangle(floor, (w//2, h//2+50), (w//4*3, h//2+80-12), (255, 255, 255), -1)
+# ranges = [area_range for area_range in horizen_range.items()]
+# print(len(ranges))
+# print(ranges, '\n')
+
+# horizen_range_occupied = {}
+
+# for horizen, hrz_rng in horizen_range.items():
+#     print(horizen, hrz_rng)
+#     # break
+
+
+# for horizen, hrz_rng in horizen_range.items():
+#     for line in range(*hrz_rng):
+#         for colon in range(w):
+#             if all(floor[line][colon]):
+#                 # if equalColors(floor[line][colon], [255, 255, 255]):
+#                 horizen_range_occupied[horizen] = horizen_range_occupied.get(
+#                     horizen, 0) + 1
+
+
+# # print(colors_set)
+# print(horizen_range_occupied.items())
+# for horizen, occupied_pixels in horizen_range_occupied.items():
+#     print(f"{horizen} ==> {occupied_pixels} Pixel")
+
+# print("*"*30)
+# print(pickHorizen(horizen_range, horizen_range_occupied, floor))
+
+# cv.imshow("floor", floor)
+# cv.waitKey()
+# cv.destroyAllWindows()
+
+
+# #######################################################
+sampels = [
+    "GaitDatasetA-silh/zc/90_3/zc-90_3-080.png",
+    "GaitDatasetA-silh/zl/00_4/zl-00_4-008.png",
+    "GaitDatasetA-silh/zl/00_4/zl-00_4-031.png",
+    "GaitDatasetA-silh/zl/00_4/zl-00_4-044.png",
+    "GaitDatasetA-silh/xxj/45_3/xxj-45_3-021.png",
+    "GaitDatasetA-silh/yjf/90_4/yjf-90_4-001.png",
+    "GaitDatasetA-silh/yjf/90_4/yjf-90_4-044.png",
+    "GaitDatasetA-silh/yjf/90_4/yjf-90_4-047.png"
+]
+
+
+def findSignificantContour(edgeImg):
+    contours, hierarchy = cv.findContours(
+        edgeImg,
+        cv.RETR_TREE,
+        cv.CHAIN_APPROX_SIMPLE
+    )
+    # Find level 1 contours
+    level1Meta = []
+    for contourIndex, tupl in enumerate(hierarchy[0]):
+        # Filter the ones without parent
+        if tupl[3] == -1:
+            tupl = np.insert(tupl.copy(), 0, [contourIndex])
+            level1Meta.append(tupl)
+# From among them, find the contours with large surface area.
+    contoursWithArea = []
+    for tupl in level1Meta:
+        contourIndex = tupl[0]
+        contour = contours[contourIndex]
+        area = cv.contourArea(contour)
+        contoursWithArea.append([contour, area, contourIndex])
+
+    contoursWithArea.sort(key=lambda meta: meta[1], reverse=True)
+    largestContour = contoursWithArea[0][0]
+    return largestContour
+
+
+for sample in sampels:
+    img = cv.imread(sample)
+    img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+    canny = cv.Canny(img, 125, 175)
+    Contours, hierarchies = cv.findContours(
+        canny, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE)
+    blank = np.zeros(img.shape, dtype='uint8')
+    cv.drawContours(blank, Contours, 0,
+                    (0, 255, 0), 2, cv.LINE_AA, maxLevel=1)
+    cv.imshow('Sample Pic', img)
+    cv.imshow('Contour result', blank)
+
+    # contour = findSignificantContour(img)
+    # # Draw the contour on the original image
+    # contourImg = np.copy(contour)
+    # cv.drawContours(contourImg, [contour], 0,
+    #                 (0, 255, 0), 2, cv.LINE_AA, maxLevel=1)
+
+    # cv.imshow('Sample Pic', contourImg)
+    # cv.imshow('Contour result', contourImg)
+
+    # cv.imwrite('contour.jpg', contourImg)
+    # image_display('contour.jpg')
+    if cv.waitKey(20) & 0xFF == 110:
+        continue

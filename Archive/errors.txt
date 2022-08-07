@@ -1,0 +1,266 @@
+>> 10 times error te3 :
+File "m:\Documents\Projects\End Of Study\End of Study Project\scripts\script\PrespectiveFloor\silh video DataSetC.py", line 32, in <module>
+    walking_status_samples = listdir(path(main_direc,chosen_subject))
+  File "m:\Documents\Projects\End Of Study\End of Study Project\scripts\script\PrespectiveFloor\lib.py", line 38, in path
+    full_path += direc + "/"
+TypeError: unsupported operand type(s) for +: 'int' and 'str'
+PS M:\Documents\Projects\End Of Study\End of Study Project\scripts\script> &
+
+>> mara 11 bdit ndebuger bch fe9 bli prbllm rah fel func
+def path(*paths):
+    return "/".join(paths)
+    # full_path = ""
+    # for index in range(0, len(paths)-1):
+    #     full_path += paths[index] + "/"
+    # return full_path + paths
+>> hahi kfch kanet
+#####################################################################################################################
+>> jamais chft had error.
+>> solution: ghl66t fell var drt pathplaset full_path
+Traceback (most recent call last):
+  File "m:\Documents\Projects\End Of Study\End of Study Project\scripts\script\PrespectiveFloor\silh video DataSetC.py", 
+line 41, in <module>
+    print("Path is:>>{:>28}<<".format(path))
+TypeError: unsupported format string passed to function.__format__
+PS M:\Documents\Projects\End Of Study\End of Study Project\scripts\script>
+
+
+#####################################################################################################################
+>> idk kfch srat ki habit ndir fps
+Path is:>>   GaitDatasetC-silh/023/fs00    <<
+Traceback (most recent call last):
+  File "m:\Documents\Projects\End Of Study\End of Study Project\scripts\script\PrespectiveFloor\silh video DataSetC.py", 
+line 46, in <module>
+    1/(time1-time2)), (50, 50), cv.FONT_HERSHEY_SCRIPT_SIMPLEX, 2, (0, 255, 0))
+ZeroDivisionError: float division by zero
+PS M:\Documents\Projects\End Of Study\End of Study Project\scripts\script>
+
+#####################################################################################################################
+>> path te3 photo:
+Traceback (most recent call last):                                                          or3D.py"
+  File "m:\Documents\Projects\End Of Study\End of Study Project\scripts\script\PrespectiveFloor\PerspFloor3D.py", line 18, in <module>                                                  oor\PerspFloor3D.py", line 18
+    img1 = cv.resize(img1, (1080, 720))
+cv2.error: OpenCV(4.5.2) C:\Users\runneradmin\AppData\Local\Temp\pip-req-build-sgoydvi3\opencv\modules\imgproc\src\resize.cpp:4051: error: (-215:Assertion failed) !ssize.empty() in funcv\modules\imgproc\src\resizection 'cv::resize'
+#####################################################################################################################
+>> nsit drt argument wahed fel imshow
+Traceback (most recent call last):
+  File "m:\Documents\Projects\End Of Study\End of Study Project\scripts\script\test.py", line 600, in <module>
+    cv.imshow(floor)
+cv2.error: OpenCV(4.5.2) :-1: error: (-5:Bad argument) in function 'imshow'
+> Overload resolution failed:
+>  - imshow() missing required argument 'mat' (pos 2)
+>  - imshow() missing required argument 'mat' (pos 2)
+>  - imshow() missing required argument 'mat' (pos 2)
+
+>>
+PS M:\Documents\Projects\End Of Study\End of Study Project\scripts\script> & "C:/Program Files/Python39/python.exe" "m:/Documents/Projects/End Of Study/End of Study Project/scripts/script/test.py"
+Traceback (most recent call last):
+  File "m:\Documents\Projects\End Of Study\End of Study Project\scripts\script\test.py", line 600, in <module>
+    cv.imshow('floor', floor)
+cv2.error: OpenCV(4.5.2) :-1: error: (-5:Bad argument) in function 'imshow'
+> Overload resolution failed:
+>  - mat is not a numpy array, neither a scalar
+>  - Expected Ptr<cv::cuda::GpuMat> for argument 'mat'
+>  - Expected Ptr<cv::UMat> for argument 'mat'
+
+['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o']
+Traceback (most recent call last):
+  File "m:\Documents\Projects\End Of Study\End of Study Project\scripts\script\test.py", line 604, in <module>
+    cv.imshow()
+cv2.error: OpenCV(4.5.2) :-1: error: (-5:Bad argument) in function 'imshow'
+> Overload resolution failed:
+>  - imshow() missing required argument 'winname' (pos 1)
+>  - imshow() missing required argument 'winname' (pos 1)
+>  - imshow() missing required argument 'winname' (pos 1)
+
+>> 3fois, ghl6t drt img[:2] plaset img.shape[:2]
+>> tsemma hna kan ymad array: 
+>> cv.rectangle(floor, (w//2, h//2+50), (w//4*3+70, h//2+350), (50,50,50), -1)
+Traceback (most recent call last):
+  File "m:\Documents\Projects\End Of Study\End of Study Project\scripts\script\test.py", line 601, in <module>
+    cv.rectangle(floor, (w//2, h//2+50), (int((w/4)*3)+70, h//2+350), (50,50,50), -1)   
+TypeError: only size-1 arrays can be converted to Python scalars
+
+
+
+File "m:\Documents\Projects\End Of Study\End of Study Project\scripts\script\test.py", line 613, in <module>
+    if floor[line][colon] == [50, 50, 50]:
+ValueError: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+
+
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+>> first time python ya6ini solution m3a error
+Traceback (most recent call last):
+  File "m:\Documents\Projects\End Of Study\End of Study Project\scripts\script\test.py", line 621, in <module>
+    if equalColors(floor[line][colon], [255, 255, 255]):
+ValueError: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+#####################################################################################################################
+iveFloor/silh video DataSetB.py"
+Traceback (most recent call last):
+  File "m:\Documents\Projects\End Of Study\End of Study Project\scripts\script\PrespectiveFloor\silh video DataSetB.py", line 18, in <module>      
+    while isfile(subjects[-1]):
+  File "C:\Program Files\Python39\lib\genericpath.py", line 30, in isfile
+    st = os.stat(path)
+TypeError: stat: path should be string, bytes, os.PathLike or integer, not list
+
+>> drt list plaset tuple fell cv.resize
+Traceback (most recent call last):
+  File "m:\Documents\Projects\End Of Study\End of Study Project\scripts\script\PrespectiveFloor\silh video DataSetB.py", line 35, in <module>      
+    img = cv.resize(img, reversed(floor.shape[:2]))
+cv2.error: OpenCV(4.5.2) :-1: error: (-5:Bad argument) in function 'resize'
+> Overload resolution failed:
+>  - Can't parse 'dsize'. Input argument doesn't 
+provide sequence protocol
+>  - Can't parse 'dsize'. Input argument doesn't 
+provide sequence protocol
+
+>>3endi 2 men hado fi string {} wdrt arg wahda fell .format()
+Traceback (most recent call last):       
+  File "m:\Documents\Projects\End Of Study\End of Study Project\scripts\script\PrespectiveFloor\silh video DataSetB.py", line 28, in <module>
+    print("{:>15} : {:<35}".format('Subject Id'))
+IndexError: Replacement index 1 out of range for 
+positional args tuple
+
+>> i geuss img ma9rahach mliih
+Traceback (most recent call last):
+  File "m:\Documents\Projects\End Of Study\End  Study Project\scripts\script\PrespectiveFloor\lh video DataSetB.py", line 35, in <module>    
+    img = cv.resize(img, tuple(reversed(floor.spe[:2])))
+cv2.error: OpenCV(4.5.2) C:\Users\runneradmin\AData\Local\Temp\pip-req-build-sgoydvi3\opencv\mules\imgproc\src\resize.cpp:4051: error: (-215:sertion failed) !ssize.empty() in function 'cv:esize'
+
+>> no holly idea
+PS M:\Documents\Projects\End Of Study\End of Study Project\scripts\script>
+Oops, something went wrong.  Please report this bug with the details below.
+Report on GitHub: https://github.com/lzybkr/PSReadLine/issues/new
+-----------------------------------------------------------------------   
+Last 200 Keys:
+ c t / s c r i p t s / s c r i p t / 
+P r e s p e c t i v e F l o o r / P e r s p F l o o r 3 D . p y " Enter   
+ & Space " C : / P r o g r a m Space 
+F i l e s / P y t h o n 3 9 / p y t h o n . e x e " Space " m : / D o c u 
+m e n t s / P r o j e c t s / E n d Space O f Space S t u d y / E n d Space o f Space S t u d y Space P r o j e c t / s c r i p t s / s c r i p t / 
+P r e s p e c t i v e F l o o r / P e r s p F l o o r 3 D . p y " Enter   
+ &
+
+Exception:
+System.ArgumentOutOfRangeException: The value must be greater than or equal to zero and less than the console's buffer size in that dimension.      
+Parameter name: left
+Actual value was -1.
+   at System.Console.SetCursorPosition(Int32 left, Int32 top)
+   at Microsoft.PowerShell.Internal.VirtualTerminal.set_CursorLeft(Int32 value)
+   at Microsoft.PowerShell.PSConsoleReadLine.ReallyRender(RenderData renderData, String defaultColor)
+   at Microsoft.PowerShell.PSConsoleReadLine.ForceRender()
+   at Microsoft.PowerShell.PSConsoleReadLine.Insert(Char c)
+   at Microsoft.PowerShell.PSConsoleReadLine.SelfInsert(Nullable`1 key, Object arg)
+   at Microsoft.PowerShell.PSConsoleReadLine.ProcessOneKey(ConsoleKeyInfo 
+key, Dictionary`2 dispatchTable, Boolean ignoreIfNoAction, Object arg)    
+   at Microsoft.PowerShell.PSConsoleReadLine.InputLoop()
+   at Microsoft.PowerShell.PSConsoleReadLine.ReadLine(Runspace runspace, EngineIntrinsics engineIntrinsics)    
+-----------------------------------------------------------------------   
+PS M:\Documents\Projects\End Of Study\End of Study Project\scripts\script>  "C:/Program Files/Python39/python.exe" "m:/Documents/Projects/End Of Study/End of Study Project/scripts/script/PrespectiveFloor/PerspFloor3D.py"  
+At line:1 char:41
++ ... python.exe" 
+"m:/Documents/Projects/End Of        
+Study/End of Study Project/ ...      
++                 ~~~~~~~~~~~~~~~~~~ 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+~~~
+Unexpected token 
+'"m:/Documents/Projects/End Of       
+Study/End of Study Project/scripts/s 
+cript/PrespectiveFloor/PerspFloor3D. 
+py"' in expression or statement.     
+    + CategoryInfo          : Parse  
+   rError: (:) [], ParentContainsE   
+  rrorRecordException
+    + FullyQualifiedErrorId : Unexp  
+   ectedToken
+ 
+PS M:\Documents\Projects\End Of Study\End of Study Project\scripts\script>
+Oops, something went wrong.  Please report this bug with the details below.
+Report on GitHub: https://github.com/lzybkr/PSReadLine/issues/new
+-----------------------------------------------------------------------   
+Last 200 Keys:
+ t / s c r i p t s / s c r i p t / P 
+r e s p e c t i v e F l o o r / P e r s p F l o o r 3 D . p y " Enter     
+ & Space " C : / P r o g r a m Space 
+F i l e s / P y t h o n 3 9 / p y t h o n . e x e " Space " m : / D o c u 
+m e n t s / P r o j e c t s / E n d Space O f Space S t u d y / E n d Space o f Space S t u d y Space P r o j e c t / s c r i p t s / s c r i p t / 
+P r e s p e c t i v e F l o o r / P e r s p F l o o r 3 D . p y " Enter
+ & &
+
+Exception:
+System.ArgumentOutOfRangeException: The value must be greater than or equal to zero and less than the console's buffer size in that dimension.      
+Parameter name: left
+Actual value was -1.
+   at System.Console.SetCursorPosition(Int32 left, Int32 top)
+   at Microsoft.PowerShell.Internal.VirtualTerminal.set_CursorLeft(Int32 value)
+   at Microsoft.PowerShell.PSConsoleReadLine.ReallyRender(RenderData renderData, String defaultColor)
+   at Microsoft.PowerShell.PSConsoleReadLine.ForceRender()
+   at Microsoft.PowerShell.PSConsoleReadLine.Insert(Char c)
+   at Microsoft.PowerShell.PSConsoleReadLine.SelfInsert(Nullable`1 key, Object arg)
+   at Microsoft.PowerShell.PSConsoleReadLine.ProcessOneKey(ConsoleKeyInfo 
+key, Dictionary`2 dispatchTable, Boolean ignoreIfNoAction, Object arg)    
+   at Microsoft.PowerShell.PSConsoleReadLine.InputLoop()
+   at Microsoft.PowerShell.PSConsoleReadLine.ReadLine(Runspace runspace, EngineIntrinsics engineIntrinsics)    
+-----------------------------------------------------------------------   
+PS M:\Documents\Projects\End Of Study\End of Study Project\scripts\script>  "C:/Program Files/Python39/python.exe" "m:/Documents/Projects/End Of Study/End of Study Project/scripts/script/PrespectiveFloor/PerspFloor3D.py"  
+At line:1 char:41
++ ... python.exe" 
+"m:/Documents/Projects/End Of
+Study/End of Study Project/ ...
++                 ~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~
+Unexpected token
+'"m:/Documents/Projects/End Of
+Study/End of Study Project/scripts/s
+cript/PrespectiveFloor/PerspFloor3D.
+py"' in expression or statement.
+    + CategoryInfo          : Parse
+   rError: (:) [], ParentContainsE
+  rrorRecordException
+    + FullyQualifiedErrorId : Unexp
+   ectedToken
+#####################################################################################################################
+>> kanet dima tredli False cause kont dayer if x in (horizen_range)
+bsh haka dir test ida hadik val rahi fhadik list wana nahtaj ida kanet fell range dyallha
+def rangeLocation(horizen_range, point):
+    x = point[0]
+    for horizen, horizen_range in horizen_range.items():
+        if x in (horizen_range):
+            return horizen
+    else:
+        return False
+#####################################################################################################################
+knt nhws 3la horizen te3 last piwell wanna ghll6t medit x placet ya6ini
+kont nmed horizen talii kmll wanna kan llzm nmad horizen talii li fih pixel byad
+
+>>     for column in range(w):
+        if all(floor[line][colon]):
+>> nta goli win ghl6t
+#####################################################################################################################
+x:885 y:571 ==> M / +4 -- Area : False
+>> x:157 y:521 ==> K / -5 -- Area : False
+>> kanet tmed result haka, mnb3d fo9t bli 9llbt height m3a width
+>> like this: | default_shape = (720, 1080, 3)|
+              | w, h = default_shape[:2]      |
+#####################################################################################################################
+ File "m:\Documents\Projects\End Of Study\End of Study Project\scripts\script\PrespectiveFloor\randomPointsTest.py", line 117, in draw_circle
+    delta_coord = delta(coord_1[1], coord_2[1])
+  File "m:\Documents\Projects\End Of Study\End of Study Project\scripts\script\PrespectiveFloor\randomPointsTest.py", line 68, in delta
+    delta_horizen = deltaHorizen(squar_1[0], squar_2[0])
+  File "m:\Documents\Projects\End Of Study\End of Study Project\scripts\script\PrespectiveFloor\randomPointsTest.py", line 57, in deltaHorizen
+    horizen_1 = horizens.index(horizen_1)
+ValueError: False is not in list
+>> x:572 y:647 ==> O / +1 
+Traceback (most recent call last):
+  File "m:\Documents\Projects\End Of Study\End of Study Project\scripts\script\PrespectiveFloor\randomPointsTest.py", line 117, in draw_circle
+    delta_coord = delta(coord_1[1], coord_2[1])
+  File "m:\Documents\Projects\End Of Study\End of Study Project\scripts\script\PrespectiveFloor\randomPointsTest.py", line 68, in delta
+    delta_horizen = deltaHorizen(squar_1[0], squar_2[0])
+  File "m:\Documents\Projects\End Of Study\End of Study Project\scripts\script\PrespectiveFloor\randomPointsTest.py", line 57, in deltaHorizen
+    horizen_1 = horizens.index(horizen_1)
+ValueError: False is not in list
+>> x:527 y:625 ==> N / -1 
+#####################################################################################################################
+#####################################################################################################################

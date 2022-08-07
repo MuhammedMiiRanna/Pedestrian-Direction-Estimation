@@ -1,0 +1,169 @@
+list index out of range
+list index out of range
+OpenCV(4.5.2) :-1: error: (-5:Bad argument) in function 'circle'
+> Overload resolution failed:
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+
+OpenCV(4.5.2) :-1: error: (-5:Bad argument) in function 'circle'
+> Overload resolution failed:
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+
+OpenCV(4.5.2) :-1: error: (-5:Bad argument) in function 'circle'
+> Overload resolution failed:
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+
+OpenCV(4.5.2) :-1: error: (-5:Bad argument) in function 'circle'
+> Overload resolution failed:
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+
+OpenCV(4.5.2) :-1: error: (-5:Bad argument) in function 'circle'
+> Overload resolution failed:
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+
+OpenCV(4.5.2) :-1: error: (-5:Bad argument) in function 'circle'
+> Overload resolution failed:
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+
+OpenCV(4.5.2) :-1: error: (-5:Bad argument) in function 'circle'
+> Overload resolution failed:
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+
+OpenCV(4.5.2) :-1: error: (-5:Bad argument) in function 'circle'
+> Overload resolution failed:
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+
+OpenCV(4.5.2) :-1: error: (-5:Bad argument) in function 'circle'
+> Overload resolution failed:
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+
+OpenCV(4.5.2) :-1: error: (-5:Bad argument) in function 'circle'
+> Overload resolution failed:
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+
+OpenCV(4.5.2) :-1: error: (-5:Bad argument) in function 'circle'
+> Overload resolution failed:
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+
+OpenCV(4.5.2) :-1: error: (-5:Bad argument) in function 'circle'
+> Overload resolution failed:
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+
+OpenCV(4.5.2) :-1: error: (-5:Bad argument) in function 'circle'
+> Overload resolution failed:
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+
+OpenCV(4.5.2) :-1: error: (-5:Bad argument) in function 'circle'
+> Overload resolution failed:
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+
+OpenCV(4.5.2) :-1: error: (-5:Bad argument) in function 'circle'
+> Overload resolution failed:
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+
+OpenCV(4.5.2) :-1: error: (-5:Bad argument) in function 'circle'
+> Overload resolution failed:
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+
+OpenCV(4.5.2) :-1: error: (-5:Bad argument) in function 'circle'
+> Overload resolution failed:
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+
+OpenCV(4.5.2) :-1: error: (-5:Bad argument) in function 'circle'
+> Overload resolution failed:
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+
+OpenCV(4.5.2) :-1: error: (-5:Bad argument) in function 'circle'
+> Overload resolution failed:
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+
+OpenCV(4.5.2) :-1: error: (-5:Bad argument) in function 'circle'
+> Overload resolution failed:
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+
+OpenCV(4.5.2) :-1: error: (-5:Bad argument) in function 'circle'
+> Overload resolution failed:
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+
+OpenCV(4.5.2) :-1: error: (-5:Bad argument) in function 'circle'
+> Overload resolution failed:
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+
+False is not in list
+list index out of range
+OpenCV(4.5.2) :-1: error: (-5:Bad argument) in function 'circle'
+> Overload resolution failed:
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+
+OpenCV(4.5.2) :-1: error: (-5:Bad argument) in function 'circle'
+> Overload resolution failed:
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+
+OpenCV(4.5.2) :-1: error: (-5:Bad argument) in function 'circle'
+> Overload resolution failed:
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+
+OpenCV(4.5.2) :-1: error: (-5:Bad argument) in function 'circle'
+> Overload resolution failed:
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+
+OpenCV(4.5.2) :-1: error: (-5:Bad argument) in function 'circle'
+> Overload resolution failed:
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+
+OpenCV(4.5.2) :-1: error: (-5:Bad argument) in function 'circle'
+> Overload resolution failed:
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+
+OpenCV(4.5.2) :-1: error: (-5:Bad argument) in function 'circle'
+> Overload resolution failed:
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+
+False is not in list
+OpenCV(4.5.2) :-1: error: (-5:Bad argument) in function 'circle'
+> Overload resolution failed:
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+>  - Can't parse 'center'. Expected sequence length 2, got 3
+
+list index out of range
+list index out of range
+OpenCV(4.5.2) C:\Users\runneradmin\AppData\Local\Temp\pip-req-build-sgoydvi3\opencv\modules\core\src\arithm.cpp:214: error: (-209:Sizes of input arguments do not match) The operation is neither 'array op array' (where arrays have the same size and type), nor 'array op scalar', nor 'scalar op array' in function 'cv::binary_op'
+
+OpenCV(4.5.2) C:\Users\runneradmin\AppData\Local\Temp\pip-req-build-sgoydvi3\opencv\modules\core\src\arithm.cpp:214: error: (-209:Sizes of input arguments do not match) The operation is neither 'array op array' (where arrays have the same size and type), nor 'array op scalar', nor 'scalar op array' in function 'cv::binary_op'
+
+OpenCV(4.5.2) C:\Users\runneradmin\AppData\Local\Temp\pip-req-build-sgoydvi3\opencv\modules\core\src\arithm.cpp:214: error: (-209:Sizes of input arguments do not match) The operation is neither 'array op array' (where arrays have the same size and type), nor 'array op scalar', nor 'scalar op array' in function 'cv::binary_op'
+
+list index out of range
+list index out of range
+list index out of range
+list index out of range
+list index out of range
+list index out of range
