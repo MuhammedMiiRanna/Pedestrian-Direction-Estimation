@@ -1,0 +1,20 @@
+# Normal pic:
+# img_path = 'DataSetASamples/zc-45_3-001.png'
+# img_path = 'DataSetASamples/zc-45_3-087.png'
+# img_path = 'DataSetASamples/zc-90_3-001.png'
+
+
+
+# Spaces:
+# img_path = 'DataSetASamples/xch-45_4-026.png'
+# img_path = 'DataSetASamples/zc-00_3-001.png'
+# img_path = 'DataSetASamples/zc-00_3-044.png'
+# img_path = 'DataSetASamples/zc-90_3-080.png'
+# img_path = 'DataSetASamples/zl-00_2-019.png'
+
+
+# Noise:
+# img_path = 'DataSetASamples/nhz-90_4-033.png'
+# img_path = 'DataSetASamples/rj-90_3-018.png'
+# img_path = 'DataSetASamples/wl-45_1-050.png'
+# img_path = 'DataSetASamples/wl-90_3-058.png'
