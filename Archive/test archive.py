@@ -11,6 +11,28 @@ from random import random, randint
 import matplotlib.pyplot as plt
 from math import acos, degrees, sqrt
 
+
+# used to change the path in A dataset video
+# # print(">> Continue (y/n) r (c)!")
+# # choice = input("==> ")
+# choice = "y"
+# cv.destroyAllWindows()
+# if choice.lower() == "n":
+#     break
+# elif choice.lower() == "c":
+#     print(">>1. Waiting_Key  == {}".format(waiting_Key))
+#     print(">>2. Path_changed == {}".format(path_changed))
+#     choice = input("==> ")
+#     if choice in ["1", "2"]:
+#         if choice == "1":
+#             try:
+#                 waiting_Key = int(input("New Waiting Key ==> "))
+#             except BaseException as base_Exception:
+#                 print(base_Exception)
+#         elif choice == "2":
+#             Path = input("New Path Is ==> ")
+
+
 # h == 72 / w == 540
 # print(abspath(__file__))
 

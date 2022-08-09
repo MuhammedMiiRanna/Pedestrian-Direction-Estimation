@@ -57,24 +57,5 @@ while True:
     else:
         continue
 
-    # print(">> Continue (y/n) r (c)!")
-    # choice = input("==> ")
-    choice = "y"
-    cv.destroyAllWindows()
-    if choice.lower() == "n":
-        break
-    elif choice.lower() == "c":
-        print(">>1. Waiting_Key  == {}".format(waiting_Key))
-        print(">>2. Path_changed == {}".format(path_changed))
-        choice = input("==> ")
-        if choice in ["1", "2"]:
-            if choice == "1":
-                try:
-                    waiting_Key = int(input("New Waiting Key ==> "))
-                except BaseException as base_Exception:
-                    print(base_Exception)
-            elif choice == "2":
-                Path = input("New Path Is ==> ")
-
 print("\a\a\a>> Time: {} Minute!! {:.3f} Second!!".format(
     int((time()-starting_time)/60), (time()-starting_time) % 60))
