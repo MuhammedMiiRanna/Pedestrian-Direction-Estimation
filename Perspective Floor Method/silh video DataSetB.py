@@ -5,18 +5,21 @@ from random import choice
 import generalLib as glib
 from os.path import isfile
 import perspectiveFloorLib as pflib
+import viewfinder
 
 
 direc = main_direc = glib.dataset_directories['B']
 floor = pflib.draw_perspective_floor()[0]
-new_dim = tuple(reversed(floor.shape[:2]))
+# new_dim = tuple(reversed(floor.shape[:2]))
+new_dim = tuple(reversed(pflib.new_scene_shape[:2]))
+old_dim = tuple(reversed(pflib.default_image_shape[:2]))
 waiting_Key = int(1000/25)
 history = []
 pTime = time()
 
 
 while True:
-    # get a random pic directorie which isn't in the directorie
+    # get a random pic directorie which isn't in the directorie history
     while not isfile(direc):
         direc = glib.path(direc, choice(listdir(direc)))
     direc = glib.pic_direc(direc)
@@ -32,13 +35,12 @@ while True:
         if index == 0:
             print('Calculating!')
             img = cv.imread(glib.path(direc, pic))
-            cv.imshow('img', img)
-            cv.waitKey()
-            cv.destroyAllWindows()
             first_points = pflib.interest_points(img)[0]
             # new_coordinate(oldCoord, oldDim, newDim)
-            first_points = (glib.new_coordinate(first_points[0], tuple(reversed(img.shape)), new_dim), 
-                            glib.new_coordinate(first_points[1], tuple(reversed(img.shape)), new_dim))
+            print(first_points)
+            first_points = (glib.new_coordinate(first_points[0], old_dim, new_dim),
+                            glib.new_coordinate(first_points[1], old_dim, new_dim))
+            print(first_points)
             img = cv.resize(img, new_dim)
             scene = cv.bitwise_or(floor, img)
             # floor = cv.bitwise_or(pflib.draw_perspective_floor()[0], img)
@@ -51,21 +53,22 @@ while True:
             img = cv.imread(
                 glib.path(direc, pictures[-1]))
             last_points, img = pflib.interest_points(img)[0:2]
-            last_points = (glib.new_coordinate(last_points[0], img.shape, floor.shape), 
-                            glib.new_coordinate(last_points[1], img.shape, floor.shape))
+            last_points = (glib.new_coordinate(last_points[0], old_dim, new_dim),
+                           glib.new_coordinate(last_points[1], old_dim, new_dim))
 
-            img = cv.resize(img, (1080, 720))
+            img = cv.resize(img, new_dim)
             scene = cv.bitwise_or(floor, img)
             print('Done Calculating!')
+            
+            viewfinder.viewfinder(scene, tuple(reversed(first_points[0])))
+            viewfinder.viewfinder(scene, tuple(reversed(first_points[1])))
+            viewfinder.viewfinder(scene, tuple(reversed(last_points[0])))
+            viewfinder.viewfinder(scene, tuple(reversed(last_points[1])))
 
-            scene = cv.circle(scene, tuple(
-                reversed(first_points[0])), 3, (255, 0, 0), 3)
-            scene = cv.circle(scene, tuple(
-                reversed(first_points[1])), 3, (255, 0, 0), 3)
-            scene = cv.circle(scene, tuple(
-                reversed(last_points[0])), 3, (255, 0, 0), 3)
-            scene = cv.circle(scene, tuple(
-                reversed(last_points[1])), 3, (255, 0, 0), 3)
+            # scene = cv.circle(scene, tuple(reversed(first_points[0])), 3, (255, 0, 0), 3)
+            # scene = cv.circle(scene, tuple(reversed(first_points[1])), 3, (255, 0, 0), 3)
+            # scene = cv.circle(scene, tuple(reversed(last_points[0])), 3, (255, 0, 0), 3)
+            # scene = cv.circle(scene, tuple(reversed(last_points[1])), 3, (255, 0, 0), 3)
         else:
             cTime = time()
             img = cv.imread(glib.path(direc, pic))

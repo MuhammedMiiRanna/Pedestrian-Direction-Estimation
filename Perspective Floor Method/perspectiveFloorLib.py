@@ -4,8 +4,9 @@ import numpy as np
 import cv2 as cv
 
 
-default_shape = (720, 1080, 3)
-h, w = default_shape[:2]
+default_image_shape = (240, 352, 3)
+new_scene_shape = (736, 1080, 3)
+h, w = new_scene_shape[:2]
 
 main_area = {
     'N': [(w//2, h//2),     (w-1,    h*3//4-1)],
@@ -122,7 +123,7 @@ def horizone_angle(area_1, area_2, delta_coord):
 # #################################################################
 #
 
-def draw_perspective_floor(dim=(720, 1080, 3)):
+def draw_perspective_floor(dim=(736, 1080, 3)):
     blank = np.zeros(dim, np.uint8)
     h, w = dim[:2]
     center = b_point = [72, int(w//2)]
@@ -187,7 +188,7 @@ def draw_perspective_floor(dim=(720, 1080, 3)):
 
 
 # TODO: decide if u want thos 2 func as one or nah
-def drawPerspectiveFloorWithAnimations(dim=(720, 1080, 3)):
+def drawPerspectiveFloorWithAnimations(dim=(736, 1080, 3)):
     blank = np.zeros(dim, np.uint8)
     # center = v_point = [72, int(w//2)]
     h, w = dim[:2]

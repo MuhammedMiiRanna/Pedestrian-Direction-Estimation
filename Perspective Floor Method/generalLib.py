@@ -1,3 +1,4 @@
+from email.policy import default
 from time import time, sleep, localtime
 from os import name, system
 import numpy as np
@@ -40,14 +41,17 @@ dataset_walker_status = {
 
 
 A_angles = ["00", "45", "90"]
-B_angles = ['000', '018', '036', '054', '072', '090', '108', '126', '144', '162', '180']
+B_angles = ['000', '018', '036', '054', '072',
+            '090', '108', '126', '144', '162', '180']
 C_angles = None
 
 dataset_directories = {
     'A': '',
-    'B': "Pedestrian Direction Estimation\GaitDatasetB-silh",
+    'B': "GaitDatasetB-silh",
     'C': ''
 }
+
+# ######################################################
 
 
 def doNothing(nothing):
@@ -229,14 +233,15 @@ def resize_image(image, scale=0.3, dim=0):
     return cv.resize(image, dim, interpolation=cv.INTER_LINEAR)
 
 
-def new_coordinate(oldCoord, oldDim, newDim):
-    oldX, oldY = oldDim[:2]
-    newX, newY = newDim[:2]
-    x, y = oldCoord
+def new_coordinate(old_coord, old_dim, new_dim):
+    # [:2]: just to be sure that its only width and height.
+    old_x, old_y = old_dim[:2]
+    new_x, new_y = new_dim[:2]
+    x, y = old_coord
 
-    # Rx = int(newX/oldX)
-    # Ry = int(newY/oldY)
-    Rx = int(oldX/newX)
-    Ry = int(oldY/newY)
+    Rx = int(new_x/old_x)
+    Ry = int(new_y/old_y)
+    # Rx = int(old_x/new_x)
+    # Ry = int(old_y/new_y)
     new_x, new_y = (round(Rx * x), round(Ry * y))
     return new_x, new_y
