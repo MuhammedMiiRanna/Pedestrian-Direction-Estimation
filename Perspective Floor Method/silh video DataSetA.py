@@ -9,17 +9,20 @@ import perspectiveFloorLib as pflib
 
 # initialization:
 starting_time = time()
-waiting_Key = int(1000/35)
-main_direc = "GaitDatasetA-silh"
-path_changed = False
 floor = pflib.draw_perspective_floor()[0]
+new_dim, old_dim = pflib.get_new_old_dim()
+main_direc = glib.dataset_directories['A']
+waiting_Key = int(1000/35)
+path_changed = False
 pTime = 0
+
+
 
 while True:
     if not path_changed:
         walker_folders = listdir(main_direc)
         choosen_walker = walker_folders[randint(0, len(walker_folders)-1)]
-        choosen_angle = glib.angles[randint(0, len(glib.angles)-1)]
+        choosen_angle = glib.dataset_angles['A'][randint(0, len(glib.dataset_angles['A'])-1)]
         # to avoid some angle, as u choose
         # if choosen_angle != "45":
         #     continue
@@ -32,25 +35,25 @@ while True:
 
     print("Path is: >>{:^30}<<".format(path))
     for pic in pictures:
+        #############################################
+        # fps infos:
         cTime = time()
         latency = cTime-pTime
         fps = 1/(cTime-pTime)
         pTime = cTime
         #############################################
-        img = cv.imread(path+"/"+pic)
-        img = cv.resize(img, (1080, 720))
-        # img = fill(img)
+        img = cv.imread(glib.path(path, pic))
+        img = cv.resize(img, new_dim)
         scene = cv.bitwise_or(floor, img)
-        glib.put_fps(scene, fps, latency, pLate=True)
+        glib.put_fps(scene, fps, latency, put_latency=True)
         cv.imshow('Video test', glib.resize_image(scene, scale=0.8))
         if cv.waitKey(waiting_Key) & 0xFF == 115:
+            # press 's' to stop the current video
             break
-        #############################################
-        # cv.imshow('Video test', img)
-        # cv.waitKey(waiting_Key)
-        #############################################
     if cv.waitKey() & 0xFF == 113:
-        break  # Q
+        # press 'q' to quit the current video.
+        # press anyKey to for the next video.
+        break
     else:
         continue
 

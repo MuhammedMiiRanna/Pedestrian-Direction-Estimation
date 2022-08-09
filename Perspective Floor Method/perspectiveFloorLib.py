@@ -26,10 +26,18 @@ def change_main_areas(shape):
         'W': [(0,    h//2),     (w//2-1, h*3//4-1)]
     }
 
+# #################################################################
+
+
+def get_new_old_dim():
+    return (tuple(reversed(new_scene_shape[:2])),
+            tuple(reversed(default_image_shape[:2])))
 
 # #################################################################
 # locate the posiiotn of a point (area/horizon/angle)
 # Return Area, or False
+
+
 def locate_area(coord):
     for area, ar_range in main_area.items():
         if ar_range[0][0] <= coord[0] <= ar_range[1][0]:
@@ -357,7 +365,7 @@ def interest_points(img, reverse=False):
     # img = cv.imread('casia.png',0)  # 0 = grayscale
     # img_path = 'casia.png'
     # img = cv.imread(img_path)
-    if len(img.shape)>2:
+    if len(img.shape) > 2:
         img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
     img = cv.bitwise_not(img)
 

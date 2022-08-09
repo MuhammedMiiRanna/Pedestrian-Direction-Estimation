@@ -8,20 +8,23 @@ import cv2 as cv
 # dataset link: http://www.cbsr.ia.ac.cn/users/szheng/?page_id=71
 
 
-A_dataset_walker_status = None
+# we replaceed this with the dictionary below
+# if you change this again you need to
+# change it in B_dataset_details function below.
+# A_dataset_walker_status = None
 
-B_dataset_walker_status = {
-    'nm': 'Normal',
-    'cl': 'In Coat',
-    'bg': 'In Bag',
-}
+# B_dataset_walker_status = {
+#     'nm': 'Normal',
+#     'cl': 'In Coat',
+#     'bg': 'In Bag',
+# }
 
-C_dataset_walker_status = {
-    'fn': "normal",
-    'fq': "fast walk",
-    'fs': "slow walk",
-    'fb': "with a bag"
-}
+# C_dataset_walker_status = {
+#     'fn': "normal",
+#     'fq': "fast walk",
+#     'fs': "slow walk",
+#     'fb': "with a bag"
+# }
 
 
 dataset_walker_status = {
@@ -40,13 +43,16 @@ dataset_walker_status = {
 }
 
 
-A_angles = ["00", "45", "90"]
-B_angles = ['000', '018', '036', '054', '072',
-            '090', '108', '126', '144', '162', '180']
-C_angles = None
+dataset_angles = {
+    'A': ['00', '45', '90'],
+    'B': ['000', '018', '036', '054', '072',
+          '090', '108', '126', '144', '162', '180'],
+    'C': None
+}
+
 
 dataset_directories = {
-    'A': '',
+    'A': "GaitDatasetA-silh",
     'B': "GaitDatasetB-silh",
     'C': ''
 }
@@ -74,6 +80,18 @@ def clear():
         _ = system('clear')
 
 
+def A_dataset_details(direc='', pic_name='', n_frmaes='', print_res=False):
+    inf = pic_name[:-4].split("-")
+    if print_res:
+        print("Path is >>{:^35}<<".format(direc))
+        print("       >> {} Frame <<".format(n_frmaes))
+        print(">>{:>15} : {:>03}".format('Subject Id', inf[0]))
+        print(">>{:>15} : {:>03}".format('Status number', inf[2]))
+        print(">>{:>15} : {:<8}".format(
+            'Walking status', dataset_walker_status['B'][inf[1]]))
+        print(">>{:>15} : {:>03} deg".format('Walking Angel', inf[3]))
+
+
 def B_dataset_details(direc='', pic_name='', n_frmaes='', print_res=False):
     inf = pic_name[:-4].split("-")
     if print_res:
@@ -82,7 +100,7 @@ def B_dataset_details(direc='', pic_name='', n_frmaes='', print_res=False):
         print(">>{:>15} : {:>03}".format('Subject Id', inf[0]))
         print(">>{:>15} : {:>03}".format('Status number', inf[2]))
         print(">>{:>15} : {:<8}".format(
-            'Walking status', B_dataset_walker_status[inf[1]]))
+            'Walking status', dataset_walker_status['B'][inf[1]]))
         print(">>{:>15} : {:>03} deg".format('Walking Angel', inf[3]))
     # def B_dataset_details(direc, inf, n_frmaes):
     #     print("Path is >>{:^35}<<".format(direc))

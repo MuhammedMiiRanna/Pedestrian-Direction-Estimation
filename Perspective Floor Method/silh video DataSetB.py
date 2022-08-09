@@ -8,18 +8,18 @@ import perspectiveFloorLib as pflib
 import viewfinder
 
 
-direc = main_direc = glib.dataset_directories['B']
 floor = pflib.draw_perspective_floor()[0]
+new_dim, old_dim = pflib.get_new_old_dim()
 # new_dim = tuple(reversed(floor.shape[:2]))
-new_dim = tuple(reversed(pflib.new_scene_shape[:2]))
-old_dim = tuple(reversed(pflib.default_image_shape[:2]))
+direc = main_direc = glib.dataset_directories['B']
 waiting_Key = int(1000/25)
 history = []
 pTime = time()
 
 
 while True:
-    # get a random pic directorie which isn't in the directorie history
+    # we used here different logic then A_video to get a random 
+    # pic directorie which isn't in the directories history.
     while not isfile(direc):
         direc = glib.path(direc, choice(listdir(direc)))
     direc = glib.pic_direc(direc)
