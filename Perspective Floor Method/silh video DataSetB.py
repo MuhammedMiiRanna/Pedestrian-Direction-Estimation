@@ -76,8 +76,8 @@ while True:
             # press 's' to stop the current video
             break
 
-    if cv.waitKey(4000) & 0xFF == 115:
-        # press 's' to quit
+    if cv.waitKey(4000) & 0xFF == 113:
+        # press 'q' to quit
         break
     cv.destroyAllWindows()
     direc = main_direc

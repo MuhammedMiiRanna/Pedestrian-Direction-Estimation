@@ -54,7 +54,7 @@ dataset_angles = {
 dataset_directories = {
     'A': "GaitDatasetA-silh",
     'B': "GaitDatasetB-silh",
-    'C': ''
+    'C': "GaitDatasetC-silh"
 }
 
 
@@ -177,8 +177,16 @@ def put_info(img, point, cp, delta, angle, version='1'):
         else:
             cv.putText(img, "Walking Range : '{:.0f}' -> '{:.0f}'".format(angle_est-10, angle_est+10), (10, 175),
                        font, fontscale, color, thickness)
-
     return img
+
+def walk_statu_filter(wsl, ws):
+    # wsl: walking status list
+    # ws: walking status
+    wsl2 = []
+    for status in wsl:
+        if ws in status:
+            wsl2.append(status)
+    return wsl2
 
 
 def time_toked(seconds):

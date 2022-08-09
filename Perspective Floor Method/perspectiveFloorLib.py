@@ -1,4 +1,5 @@
 from math import sqrt, acos, degrees
+from random import randint
 from time import time
 import numpy as np
 import cv2 as cv
@@ -32,6 +33,18 @@ def change_main_areas(shape):
 def get_new_old_dim():
     return (tuple(reversed(new_scene_shape[:2])),
             tuple(reversed(default_image_shape[:2])))
+
+
+def get_new_old_shape():
+    return (new_scene_shape,
+            default_image_shape)
+
+# #################################################################
+
+
+def random_color():
+    return (randint(0, 254), randint(0, 254), randint(0, 254))
+
 
 # #################################################################
 # locate the posiiotn of a point (area/horizon/angle)
