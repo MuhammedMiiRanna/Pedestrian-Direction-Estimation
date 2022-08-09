@@ -35,55 +35,50 @@ while True:
         if index == 0:
             print('Calculating!')
             img = cv.imread(glib.path(direc, pic))
-            first_points = pflib.interest_points(img)[0]
-            # new_coordinate(oldCoord, oldDim, newDim)
-            print(first_points)
-            first_points = (glib.new_coordinate(first_points[0], old_dim, new_dim),
-                            glib.new_coordinate(first_points[1], old_dim, new_dim))
-            print(first_points)
+            # this comment will be removed when new_coordinate func is fixed.
+            # first_points = pflib.interest_points(img)[0]
+            # first_points = (glib.new_coordinate(first_points[0], old_dim, new_dim),
+            #                 glib.new_coordinate(first_points[1], old_dim, new_dim))
             img = cv.resize(img, new_dim)
             scene = cv.bitwise_or(floor, img)
-            # floor = cv.bitwise_or(pflib.draw_perspective_floor()[0], img)
             print('Done Calculating!')
-            # scene = floor
-            # scene = prepareScene(pic, floor, direc, 1 /
-            #                      (cTime-pTime), cTime-pTime)
         elif index == len(pictures)-1:
             print('Calculating!')
-            img = cv.imread(
-                glib.path(direc, pictures[-1]))
-            last_points, img = pflib.interest_points(img)[0:2]
-            last_points = (glib.new_coordinate(last_points[0], old_dim, new_dim),
-                           glib.new_coordinate(last_points[1], old_dim, new_dim))
+            img = cv.imread(glib.path(direc, pictures[-1]))
+            # this comment will be removed when new_coordinate func is fixed.
+            # last_points, img = pflib.interest_points(img)[0:2]
+            # last_points = (glib.new_coordinate(last_points[0], old_dim, new_dim),
+            #                glib.new_coordinate(last_points[1], old_dim, new_dim))
 
             img = cv.resize(img, new_dim)
             scene = cv.bitwise_or(floor, img)
             print('Done Calculating!')
             
-            viewfinder.viewfinder(scene, tuple(reversed(first_points[0])))
-            viewfinder.viewfinder(scene, tuple(reversed(first_points[1])))
-            viewfinder.viewfinder(scene, tuple(reversed(last_points[0])))
-            viewfinder.viewfinder(scene, tuple(reversed(last_points[1])))
-
-            # scene = cv.circle(scene, tuple(reversed(first_points[0])), 3, (255, 0, 0), 3)
-            # scene = cv.circle(scene, tuple(reversed(first_points[1])), 3, (255, 0, 0), 3)
-            # scene = cv.circle(scene, tuple(reversed(last_points[0])), 3, (255, 0, 0), 3)
-            # scene = cv.circle(scene, tuple(reversed(last_points[1])), 3, (255, 0, 0), 3)
+            # this part draw a viewfinder (see viewfinder.py) on the foot points
+            # which me our interest points.
+            # there is an issue with the new_coord function (check glib.new_coordinate())
+            # it gives a margin of error, we can avoid that by resizing the image so
+            # we don't need that function, but it will take a large ammount of time.
+            # viewfinder.viewfinder(scene, tuple(reversed(first_points[0])))
+            # viewfinder.viewfinder(scene, tuple(reversed(first_points[1])))
+            # viewfinder.viewfinder(scene, tuple(reversed(last_points[0])))
+            # viewfinder.viewfinder(scene, tuple(reversed(last_points[1])))
         else:
-            cTime = time()
             img = cv.imread(glib.path(direc, pic))
             img = cv.resize(img, new_dim)
-            # floor = cv.bitwise_or(floor, img)
+            cTime = time()
             scene = glib.prepare_scene(pic, floor, direc, 1 /
                                        (cTime-pTime), cTime-pTime)
 
-        cTime = time()
         cv.imshow('data Set B', glib.resize_image(scene, scale=1))
-        pTime = cTime
+        pTime = time()
         if cv.waitKey(waiting_Key) & 0xFF == 115:
+            # press 's' to stop the current video
             break
 
-    cv.waitKey(4000)
+    if cv.waitKey(4000) & 0xFF == 115:
+        # press 's' to quit
+        break
     cv.destroyAllWindows()
     direc = main_direc
 

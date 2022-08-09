@@ -51,6 +51,12 @@ dataset_directories = {
     'C': ''
 }
 
+
+fps_lat_color = (0, 255, 0)
+default_font = cv.FONT_HERSHEY_PLAIN
+default_fontscale = 3
+default_thickness = 2
+
 # ######################################################
 
 
@@ -175,29 +181,14 @@ def time_toked(seconds):
     return toked
 
 
-def view_finder(img, coord):
-    y, x = coord
-    img = cv.circle(img, coord, 10, (0, 0, 255), thickness=0)
-    img = cv.circle(img, coord, 15, (0, 0, 255), thickness=1)
-    cv.line(img, (y, x+3), (y, x+7), (255, 255, 0), thickness=1)
-    cv.line(img, (y, x-3), (y, x-7), (255, 255, 0), thickness=1)
-    cv.line(img, (y+3, x), (y+7, x), (255, 255, 0), thickness=1)
-    cv.line(img, (y-3, x), (y-7, x), (255, 255, 0), thickness=1)
-    # ####
-    cv.line(img, (y, x+11), (y, x+18), (0, 0, 255), thickness=2)
-    cv.line(img, (y, x-11), (y, x-18), (0, 0, 255), thickness=2)
-    cv.line(img, (y+11, x), (y+18, x), (0, 0, 255), thickness=2)
-    cv.line(img, (y-11, x), (y-18, x), (0, 0, 255), thickness=2)
-
-
-def put_fps(img, fps, late, put_fps=True, put_latency=False, color=(0, 255, 0), font=cv.FONT_HERSHEY_PLAIN, fontscale=3, thickness=2):
+def put_fps(img, fps, late, put_fps=True, put_latency=False):
     if put_latency:
-        late = int(str(late).split(".")[-1][:4])
-        cv.putText(img, 'Latency: {:4} ms'.format(
-            late), (10, 40), font, fontscale, color, thickness)
+        late = str(late).split(".")[-1][:3]
+        cv.putText(img, 'Latency: {:3} ms'.format(
+            late), (10, 40), default_font, default_fontscale, fps_lat_color, default_thickness)
     if put_fps:
-        cv.putText(img, 'FPS: {:0.1f}'.format(
-            fps), (10, 80), font, fontscale, color, thickness)
+        cv.putText(img, 'FPS: {:0.1f}'.format(fps), (10, 80), default_font,
+                   default_fontscale, fps_lat_color, default_thickness)
     return img
 
 
