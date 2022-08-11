@@ -29,6 +29,9 @@ def change_main_areas(shape):
 
 # #################################################################
 
+# Dimension is: Width, height
+# shape is:     Width, height, depth(channels)
+
 
 def get_new_old_dim():
     return (tuple(reversed(new_scene_shape[:2])),
