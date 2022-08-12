@@ -1,6 +1,8 @@
-from email.policy import default
 from time import time, sleep, localtime
 from os import name, system
+from random import choice
+from os import listdir
+from os.path import isfile
 import numpy as np
 import cv2 as cv
 
@@ -80,7 +82,7 @@ def clear():
         _ = system('clear')
 
 
-def A_dataset_details(direc='', pic_name='', n_frmaes='', print_res=False):
+def print_A_dataset_details(direc='', pic_name='', n_frmaes='', print_res=False):
     inf = pic_name[:-4].split("-")
     if print_res:
         print("Path is >>{:^35}<<".format(direc))
@@ -92,7 +94,7 @@ def A_dataset_details(direc='', pic_name='', n_frmaes='', print_res=False):
         print(">>{:>15} : {:>03} deg".format('Walking Angel', inf[3]))
 
 
-def B_dataset_details(direc='', pic_name='', n_frmaes='', print_res=False):
+def print_B_dataset_details(direc='', pic_name='', n_frmaes='', print_res=False):
     inf = pic_name[:-4].split("-")
     if print_res:
         print("Path is >>{:^35}<<".format(direc))
@@ -113,7 +115,7 @@ def B_dataset_details(direc='', pic_name='', n_frmaes='', print_res=False):
     return inf
 
 
-def path(*paths):
+def join_path(*paths):
     return "/".join(paths)
 
 
@@ -125,6 +127,51 @@ def pic_direc(path):
 def pic_name(path):
     direc = path.split("/")
     return direc[-1]
+
+
+def random_path(path, history=[], max_counter=50):
+    """
+    Returns (pictures list, directory path) from a random pictures(samples) directory path.
+
+    This function gives you a list of images from a random folder path from a main path(or dataset)
+    along with the path of the images,
+    which the path of images isn't in the history list (if any is given).
+
+    Parameters
+    ----------
+    path : string
+        dataset("GaitDatasetA-silh" for exp) or dataset char ("A" for exp).
+
+    history : list
+        default = None, 
+        history of visited paths.
+
+    max_counter : int
+    default = 50
+
+    Returns
+    -------
+    string
+        random images list(from a random path).
+    string
+        images folder path.
+    """
+    if path in dataset_directories.keys():
+        path = dataset_directories[path.upper()]
+    counter = 0
+    while counter < max_counter:
+        counter += 1
+        directory = path
+        while not isfile(directory):
+            directory = join_path(directory, choice(listdir(directory)))
+        directory = pic_direc(directory)
+        if directory in history:
+            continue
+    history.append(directory)  # append the direc to the history
+    pictures = listdir(directory)
+    if counter > max_counter:
+        return None, directory
+    return pictures, directory
 
 
 def put_info(img, point, cp, delta, angle, version='1'):
@@ -179,6 +226,7 @@ def put_info(img, point, cp, delta, angle, version='1'):
                        font, fontscale, color, thickness)
     return img
 
+
 def walk_statu_filter(wsl, ws):
     # wsl: walking status list
     # ws: walking status
@@ -219,7 +267,7 @@ def put_fps(img, fps, late, put_fps=True, put_latency=False):
 
 
 def prepare_scene(pic, floor, direc, fps, late):
-    img = cv.imread(path(direc, pic))
+    img = cv.imread(join_path(direc, pic))
     # img = pic
     img = cv.resize(img, tuple(reversed(floor.shape[:2])))
     scene = cv.bitwise_or(img, floor)

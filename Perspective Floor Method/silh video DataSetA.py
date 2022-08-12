@@ -42,7 +42,7 @@ while True:
         fps = 1/(cTime-pTime)
         pTime = cTime
         #############################################
-        img = cv.imread(glib.path(path, pic))
+        img = cv.imread(glib.join_path(path, pic))
         img = cv.resize(img, new_dim)
         scene = cv.bitwise_or(floor, img)
         glib.put_fps(scene, fps, latency, put_latency=True)

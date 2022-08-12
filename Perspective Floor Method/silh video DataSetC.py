@@ -21,13 +21,13 @@ pTime = 0
 while True:
     chosen_subject = str(choice(subjects))
     # cause the folders are all in numbers
-    walking_status_samples = listdir(glib.path(main_direc, chosen_subject))
+    walking_status_samples = listdir(glib.join_path(main_direc, chosen_subject))
     walking_status = choice(list(walk_stats.keys()))
     walking_status_samples = glib.walk_statu_filter(
         walking_status_samples, walking_status)
     sequence = choice(walking_status_samples)
     # sequence_number = "{:02}".format(randint(0,1)) if walking_status != "fn" else "{:02}".format(randint(0,3))
-    full_path = glib.path(main_direc, chosen_subject, sequence)
+    full_path = glib.join_path(main_direc, chosen_subject, sequence)
     if full_path in history:
         continue
     history.append(full_path)
