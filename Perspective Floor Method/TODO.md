@@ -5,5 +5,5 @@
 - [x] FPS and latency problem (int(str(....)) was taking the first 0)
 - [ ] mention that analyzing video manualy by you will give an idea of what to use in you research. as the coursera course mentioned.
 - [ ] add how to run instructions.
-- [ ]
+- [ ] mention the difference between dim, shape....
 - [ ]

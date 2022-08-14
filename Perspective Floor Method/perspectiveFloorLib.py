@@ -34,11 +34,25 @@ def change_main_areas(shape):
 
 
 def get_new_old_dim():
+    """gives the new and the old dimension of the used pictures.
+    dimension is (height, width)
+
+    Returns:
+        tuple: the new dimension of pictures.
+        tuple: the old dimension of pictures.
+    """
     return (tuple(reversed(new_scene_shape[:2])),
             tuple(reversed(default_image_shape[:2])))
 
 
 def get_new_old_shape():
+    """gives the new and the old shape of the used pictures.
+    shape is (height, width, channels)
+
+    Returns:
+        tuple: the new shape of pictures.
+        tuple: the old shape of pictures.
+    """
     return (new_scene_shape,
             default_image_shape)
 
@@ -53,7 +67,7 @@ def random_color():
 # locate the posiiotn of a point (area/horizon/angle)
 # Return Area, or False
 
-
+# Return Area, or False
 def locate_area(coord):
     for area, ar_range in main_area.items():
         if ar_range[0][0] <= coord[0] <= ar_range[1][0]:
@@ -64,7 +78,7 @@ def locate_area(coord):
 # TODO: find a way to remove 'hrzns_rng' from the parameteres here:
 # Return horizen, or False
 
-
+# Return horizen, or False
 def locate_horizen(coord, horizons_range):
     for hrz, rng in horizons_range.items():
         if coord[1] in range(rng[0], rng[1]+1):
@@ -302,6 +316,8 @@ def drawPerspectiveFloorWithAnimations(dim=(736, 1080, 3)):
 
 
 def interest_points(img, reverse=False):
+    # return ((bottom_right, bottom_left), orig_thresh, thresh, legs, legs2)
+
     # steps one and two, condition one (function included for clarity)
     def pixel_is_black(arr, x, y):
         if arr[x, y] == 1:

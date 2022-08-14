@@ -1,8 +1,17 @@
 import cv2 as cv
 import numpy as np
 
+"""function that draw a small viewfinder in the given image.
+    """
+
 
 def viewfinder(img, coord):
+    """draw a small viewfinder in the given image.
+
+    Args:
+        img (numpy.ndarray): numpy array(image in our case).
+        coord (tuple): the center of the point coordinate.
+    """
     y, x = coord
     img = cv.circle(img, coord, 10, (0, 0, 255), thickness=0)
     img = cv.circle(img, coord, 15, (0, 0, 255), thickness=1)

@@ -9,7 +9,7 @@ import cv2 as cv
 
 # dataset link: http://www.cbsr.ia.ac.cn/users/szheng/?page_id=71
 """
-    this library contain general function for manipulating paths and 
+    this library contain general function for manipulating paths and
     returning general informations about the dataset images.
     """
 
@@ -77,6 +77,8 @@ def doNothing(nothing):
 
 # define clear screen function
 def clear():
+    """ function that clear screen(terminal).
+    """
     # for windows
     if name == 'nt':
         _ = system('cls')
@@ -123,11 +125,27 @@ def join_path(*paths):
 
 
 def pic_direc(path):
+    """ function that returns the path of a picture directory.
+
+    Args:
+        path (str): Absolute/relative path of the picture.
+
+    Returns:
+        str: path of a picture directory.
+    """
     direc = path.split("/")
     return "/".join(direc[:-1])
 
 
 def pic_name(path):
+    """ function that returns the name of a picture.
+
+    Args:
+        path (str): Absolute/relative path of the picture.
+
+    Returns:
+        str: name of a picture.
+    """
     direc = path.split("/")
     return direc[-1]
 
@@ -302,6 +320,18 @@ def resize_image(image, scale=0.3, dim=0):
 
 
 def new_coordinate(old_coord, old_dim, new_dim):
+    """ return a new_coordinates from an old image dimension and coordinates.
+    when resizing images, sometimes we need to locate some points from the old image
+    in the new image, this function does the job.
+
+    Args:
+        old_coord (tuple): the coordinates of the point we're using in the old image.
+        old_dim (tuple): the dimension of the old image.
+        new_dim (tuple): the dimension of the new image.
+
+    Returns:
+        tuple: the coordinates of the point we're using in the new image.
+    """
     # [:2]: just to be sure that its only width and height.
     old_x, old_y = old_dim[:2]
     new_x, new_y = new_dim[:2]

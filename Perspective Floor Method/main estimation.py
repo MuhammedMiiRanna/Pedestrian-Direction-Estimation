@@ -1,4 +1,5 @@
 import cv2 as cv
+import viewfinder
 import generalLib as glib
 import perspectiveFloorLib as pflib
 
@@ -11,42 +12,41 @@ import perspectiveFloorLib as pflib
 # pic_path_2 = r'GaitDatasetA-silh\fyc\45_3\fyc-45_3-113.png'
 pictures, directory = glib.random_path(
     glib.dataset_directories['A'], history=[], max_counter=50)
-pic_path_1, pic_path_2 = pictures[0], pictures[-1]
+pic_path_1 = glib.join_path(directory, pictures[0])
+pic_path_2 = glib.join_path(directory, pictures[-1])
 del pictures
 del directory
 
-img1 = cv.imread(pic_path_1)
-img2 = cv.imread(pic_path_2)
+floor = pflib.draw_perspective_floor()[0]
+new_dim, old_dim = pflib.get_new_old_dim()
+##############################################################################################
 
-points1 = pflib.interest_points(img1)
-points2 = pflib.interest_points(img2)
-# showCopy(img1, poipflibnts1, img2, points2)
+img_1 = cv.imread(pic_path_1)
+img_2 = cv.imread(pic_path_2)
 
-oldDim = img1.shape[:2]
-newDim = (720, 1056)
+# [0]: to return only (bottom_right, bottom_left)
+points_1 = pflib.interest_points(img_1)[0]
+points_2 = pflib.interest_points(img_2)[0]
 
-img1 = cv.resize(img1, tuple(reversed(newDim)))
-img2 = cv.resize(img2, tuple(reversed(newDim)))
+img_1 = cv.resize(img_1, new_dim)
+img_2 = cv.resize(img_2, new_dim)
 
-# newCoordinate(oldCoord, oldDim, newDim)
-new_point1_1 = pflib.newCoordinate(points1[0], oldDim, newDim)
-new_point1_2 = pflib.newCoordinate(points1[1], oldDim, newDim)
-new_point2_1 = pflib.newCoordinate(points2[0], oldDim, newDim)
-new_point2_2 = pflib.newCoordinate(points2[1], oldDim, newDim)
 
-cv.circle(img1, tuple(reversed(new_point1_1)), 4, (255, 0, 255), -1)
-cv.circle(img1, tuple(reversed(new_point1_2)), 4, (255, 0, 255), -1)
-cv.circle(img2, tuple(reversed(new_point2_1)), 4, (255, 0, 255), -1)
-cv.circle(img2, tuple(reversed(new_point2_1)), 4, (255, 0, 255), -1)
+new_point_1_1 = glib.new_coordinate(points_1[0], old_dim, new_dim)
+new_point_1_2 = glib.new_coordinate(points_1[1], old_dim, new_dim)
+new_point_2_1 = glib.new_coordinate(points_2[0], old_dim, new_dim)
+new_point_2_2 = glib.new_coordinate(points_2[1], old_dim, new_dim)
 
-floor = pflib.draw_perspective_floor((*newDim, 3))[0]
-scene = cv.bitwise_or(img1, img2)
-print(floor.shape)
-print(scene.shape)
+viewfinder.viewfinder(img_1, tuple(reversed(new_point_1_1)))
+viewfinder.viewfinder(img_1, tuple(reversed(new_point_1_2)))
+viewfinder.viewfinder(img_2, tuple(reversed(new_point_2_1)))
+viewfinder.viewfinder(img_2, tuple(reversed(new_point_2_1)))
+
+scene = cv.bitwise_or(img_1, img_2)
 scene = cv.bitwise_or(scene, floor)
 
 cv.imshow('Keep Going 1', scene)
-scene = cv.resize(scene, (1100, 720))
+scene = cv.resize(scene, new_dim)
 cv.imshow('Keep Going', scene)
 cv.waitKey()
 cv.destroyAllWindows()
