@@ -8,7 +8,10 @@ import cv2 as cv
 
 
 # dataset link: http://www.cbsr.ia.ac.cn/users/szheng/?page_id=71
-
+"""
+    this library contain general function for manipulating paths and 
+    returning general informations about the dataset images.
+    """
 
 # we replaceed this with the dictionary below
 # if you change this again you need to

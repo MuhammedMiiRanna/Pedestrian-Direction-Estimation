@@ -3,13 +3,18 @@ import generalLib as glib
 import perspectiveFloorLib as pflib
 
 
-
 ##############################################################################################
 # here we are going to take two pictures one with good point and another not
-# pic_path_1 = r'M:\Documents\Projects\End Of Study\End of Study Project\scripts\GaitDatasetA-silh\fyc\00_3\fyc-00_3-001.png'
-# pic_path_2 = r'M:\Documents\Projects\End Of Study\End of Study Project\scripts\GaitDatasetA-silh\fyc\00_3\fyc-00_3-069.png'
-pic_path_1 = r'GaitDatasetA-silh\fyc\45_3\fyc-45_3-001.png'
-pic_path_2 = r'GaitDatasetA-silh\fyc\45_3\fyc-45_3-113.png'
+# pic_path_1 = r'GaitDatasetA-silh\fyc\00_3\fyc-00_3-001.png'
+# pic_path_2 = r'GaitDatasetA-silh\fyc\00_3\fyc-00_3-069.png'
+# pic_path_1 = r'GaitDatasetA-silh\fyc\45_3\fyc-45_3-001.png'
+# pic_path_2 = r'GaitDatasetA-silh\fyc\45_3\fyc-45_3-113.png'
+pictures, directory = glib.random_path(
+    glib.dataset_directories['A'], history=[], max_counter=50)
+pic_path_1, pic_path_2 = pictures[0], pictures[-1]
+del pictures
+del directory
+
 img1 = cv.imread(pic_path_1)
 img2 = cv.imread(pic_path_2)
 
@@ -41,7 +46,7 @@ print(scene.shape)
 scene = cv.bitwise_or(scene, floor)
 
 cv.imshow('Keep Going 1', scene)
-scene = cv.resize(scene, (1100,720))
+scene = cv.resize(scene, (1100, 720))
 cv.imshow('Keep Going', scene)
 cv.waitKey()
 cv.destroyAllWindows()
