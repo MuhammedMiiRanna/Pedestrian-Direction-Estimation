@@ -29,7 +29,7 @@ def change_main_areas(shape):
 
 # #################################################################
 
-# Dimension is: Width, height
+# Dimension is: height, width
 # shape is:     Width, height, depth(channels)
 
 

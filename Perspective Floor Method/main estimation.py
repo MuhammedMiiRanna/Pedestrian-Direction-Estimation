@@ -50,29 +50,3 @@ scene = cv.resize(scene, new_dim)
 cv.imshow('Keep Going', scene)
 cv.waitKey()
 cv.destroyAllWindows()
-
-##############################################################################################
-# history = []
-# # Test:
-# main_direc = "M:/Documents/Projects/End Of Study/End of Study Project/scripts/script/GaitDatasetB-silh"
-# while True:
-#     direc = main_direc
-#     while not isfile(direc):
-#         direc = "/".join((direc, choice(listdir(direc))))
-#         # direc = test(direc, choice(listdir(direc)))
-#     pic_direc = picDirec(direc)
-#     pictures = listdir(pic_direc)
-#     if pic_direc in history:
-#         direc = main_direc
-#         continue
-
-#     history.append(pic_direc)
-#     for index in range(0, len(pictures), 10):
-#         interest_points(pic_direc+"/"+pictures[index])
-#         choice = input(">> ")
-#         print(choice)
-#         if choice == 'q':
-#             break
-
-
-# print(history)
